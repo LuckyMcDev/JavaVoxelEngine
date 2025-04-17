@@ -6,7 +6,7 @@ import com.badlogic.gdx.graphics.Camera;
 import com.badlogic.gdx.graphics.PerspectiveCamera;
 import com.badlogic.gdx.math.Vector3;
 
-public class PlayerCameraController extends Camera {
+public class unused_PlayerCameraController extends Camera {
     private final PerspectiveCamera camera;
     private final Vector3 tmp = new Vector3();
 
@@ -16,7 +16,7 @@ public class PlayerCameraController extends Camera {
     private float yaw = -90f;   // Start pointing along -Z
     private float pitch = 0f;
 
-    public PlayerCameraController(PerspectiveCamera camera) {
+    public unused_PlayerCameraController(PerspectiveCamera camera) {
         this.camera = camera;
         Gdx.input.setCursorCatched(true); // Lock mouse to window
     }
