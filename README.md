@@ -1,33 +1,32 @@
-# JavaVoxelEngine
+# Informatik Projekt: Voxel Engine
 
-A [libGDX](https://libgdx.com/) project generated with [gdx-liftoff](https://github.com/libgdx/gdx-liftoff).
+Dieses Projekt zeigt die Entwicklung einer Voxel Engine in Java. Hier sind die wichtigsten Implementierungsschritte und Ergebnisse:
 
-This project was generated with a template including simple application launchers and an `ApplicationAdapter` extension that draws libGDX logo.
+## Implementierungsschritte
 
-## Platforms
+### 1. Grundlegende Voxel-Generierung
+![Voxel Generierung](resources/generation_fucked.png)
 
-- `core`: Main module with the application logic shared by all platforms.
-- `lwjgl3`: Primary desktop platform using LWJGL3; was called 'desktop' in older docs.
+### 2. Verbesserte Generierung mit Perlin Noise
+![Perlin Noise](resources/works_with_perlin.png)
 
-## Gradle
+### 3. Optimierung durch Entfernen von Steinen
+![Optimierte Voxel](resources/optimized_by_removing_stone.png)
 
-This project uses [Gradle](https://gradle.org/) to manage dependencies.
-The Gradle wrapper was included, so you can run Gradle tasks using `gradlew.bat` or `./gradlew` commands.
-Useful Gradle tasks and flags:
+### 4. Vollständige Chunk-Generierung
+![Vollständiger Chunk](resources/full_chunk_but_laggy.png)
 
-- `--continue`: when using this flag, errors will not stop the tasks from running.
-- `--daemon`: thanks to this flag, Gradle daemon will be used to run chosen tasks.
-- `--offline`: when using this flag, cached dependency archives will be used.
-- `--refresh-dependencies`: this flag forces validation of all dependencies. Useful for snapshot versions.
-- `build`: builds sources and archives of every project.
-- `cleanEclipse`: removes Eclipse project data.
-- `cleanIdea`: removes IntelliJ project data.
-- `clean`: removes `build` folders, which store compiled classes and built archives.
-- `eclipse`: generates Eclipse project data.
-- `idea`: generates IntelliJ project data.
-- `lwjgl3:jar`: builds application's runnable jar, which can be found at `lwjgl3/build/libs`.
-- `lwjgl3:run`: starts the application.
-- `test`: runs unit tests (if any).
+### 5. Benutzeroberfläche Implementierung
+![Benutzeroberfläche](resources/imguiimpl_img.png)
 
-Note that most tasks that are not specific to a single project can be run with `name:` prefix, where the `name` should be replaced with the ID of a specific project.
-For example, `core:clean` removes `build` folder only from the `core` project.
+### 6. Baumgenerierung
+![Bäume](resources/smol_trees.png)
+
+## Video Demonstration
+
+Hier ist eine Video-Demonstration des Projekts:
+
+<video width="640" height="480" controls>
+  <source src="https://cdn.discordapp.com/attachments/303440391124942858/1362373722496827546/JavaVoxelEngine_2025-04-17_12-25-58.mp4?ex=680228e7&is=6800d767&hm=5d3468deadc1513ef8a6dbfd04b01baece30f91dd8e85c5a8b2de39fdbd79772&" type="video/mp4">
+  Ihr Browser unterstützt das Video-Tag nicht.
+</video>
