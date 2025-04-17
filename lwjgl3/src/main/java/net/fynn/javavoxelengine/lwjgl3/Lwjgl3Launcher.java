@@ -4,8 +4,16 @@ import com.badlogic.gdx.backends.lwjgl3.Lwjgl3Application;
 import com.badlogic.gdx.backends.lwjgl3.Lwjgl3ApplicationConfiguration;
 import net.fynn.javavoxelengine.VoxelEngine;
 
-/** Launches the desktop (LWJGL3) application. */
+/**
+ * Hauptklasse zum Starten der Anwendung mit LWJGL3.
+ */
 public class Lwjgl3Launcher {
+
+    /**
+     * Hauptmethode zum Starten der Anwendung.
+     *
+     * @param args Kommandozeilenargumente.
+     */
     public static void main(String[] args) {
         if (StartupHelper.startNewJvmIfRequired()) return; // This handles macOS support and helps on Windows.
         createApplication();
