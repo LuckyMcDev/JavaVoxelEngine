@@ -12,18 +12,27 @@ import java.util.Random;
  * Ein Chunk besteht aus einem 3D-Array von Voxeltypen und hat eine feste Größe.
  */
 public class Chunk {
-    /**Die Weite des Chunks*/
+    /** Die Breite des Chunks. */
     public static final int WIDTH = 48;
-    /**Die Länge des Chunks*/
+
+    /** Die Tiefe des Chunks. */
     public static final int DEPTH = 48;
-    /**Die Höhe des Chunks*/
+
+    /** Die Höhe des Chunks. */
     public static final int HEIGHT = 48;
 
-    private static final int TRUNK_HEIGHT = 4;
-    private static final int LEAF_RADIUS  = 2;
+    /** Die Höhe eines Baumstammes*/
+    private static final int TRUNK_HEIGHT = 7;
 
+    /**Der radius der Blätter*/
+    private static final int LEAF_RADIUS  = 3;
+
+    /** Die Voxeltypen, die diesen Chunk bilden. */
     private final VoxelType[][][] blocks;
+
+    /** Die Ursprungskoordinaten des Chunks. */
     public final int originX, originY, originZ;
+
     private BoundingBox boundingBox;
 
     /**
@@ -99,6 +108,7 @@ public class Chunk {
 
     /**
      * Generiert Bäume im Chunk.
+     * Die Bäume sind entweder Hell oder Dunkelgrün
      *
      * @param seed Der Seed für die zufällige Generierung.
      */
@@ -107,16 +117,19 @@ public class Chunk {
         long mix = ((long)originX * 73856093L) ^ ((long)originZ * 19349663L) ^ seed;
         Random rand = new Random(mix);
 
-        // 50/50 Chance, einen Baum zu spawnen
-        if (!rand.nextBoolean()) return;
+        // 70% Chance, einen Baum zu spawnen
+        if (rand.nextDouble() >= 0.7) return;
 
-        // Wähle zufällige x,z innerhalb dieses Chunks
+        // Wähle zufällige x, z innerhalb dieses Chunks
         int tx = rand.nextInt(WIDTH);
         int tz = rand.nextInt(DEPTH);
 
         // Finde die Oberflächen-Y (erster Nicht-Luft-Block von oben)
         int ty = getSurfaceHeight(tx, tz);
         if (ty < 0 || ty + TRUNK_HEIGHT + LEAF_RADIUS >= HEIGHT) return;
+
+        // Entscheide, ob die Blätter hell oder dunkel sein sollen
+        VoxelType leafType = rand.nextBoolean() ? VoxelType.LEAVES_LIGHT : VoxelType.LEAVES_DARK;
 
         // Baue den Stamm
         for (int i = 1; i <= TRUNK_HEIGHT; i++) {
@@ -133,13 +146,14 @@ public class Chunk {
                     for (int dy = TRUNK_HEIGHT; dy <= TRUNK_HEIGHT + 1; dy++) {
                         int ly = ty + dy;
                         if (inBounds(lx, ly, lz) && getBlock(lx, ly, lz) == VoxelType.AIR) {
-                            setBlock(lx, ly, lz, VoxelType.LEAVES);
+                            setBlock(lx, ly, lz, leafType);
                         }
                     }
                 }
             }
         }
     }
+
 
     // Hilfsmethode zur Ermittlung der obersten festen Blockhöhe
     private int getSurfaceHeight(int x, int z) {
