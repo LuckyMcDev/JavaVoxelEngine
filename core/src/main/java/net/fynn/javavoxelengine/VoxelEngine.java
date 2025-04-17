@@ -29,8 +29,8 @@ public class VoxelEngine extends ApplicationAdapter {
     private ChunkGrid chunkGrid;
     private Frustum frustum;
 
-    private static final float CHUNK_RENDER_DISTANCE = 200f;
-    private static final float CHUNK_RENDER_DISTANCE_SQUARED = CHUNK_RENDER_DISTANCE * CHUNK_RENDER_DISTANCE;
+    public static float CHUNK_RENDER_DISTANCE = 200f;
+    private static float CHUNK_RENDER_DISTANCE_SQUARED = CHUNK_RENDER_DISTANCE * CHUNK_RENDER_DISTANCE;
 
     @Override
     public void create() {
@@ -185,8 +185,6 @@ public class VoxelEngine extends ApplicationAdapter {
         boolean test(A a, B b, C c);
     }
 
-
-
     private boolean isBlockExposedToAir(Chunk chunk, int x, int y, int z) {
         if (chunk.getBlock(x, y, z) == VoxelType.AIR) return false;
 
@@ -199,6 +197,13 @@ public class VoxelEngine extends ApplicationAdapter {
         return z > 0 && chunk.getBlock(x, y, z - 1) == VoxelType.AIR; // Backward
     }
 
+    public float getChunkRenderDistance() {
+        return CHUNK_RENDER_DISTANCE;
+    }
+
+    public void setChunkRenderDistance(float NEWchunkRenderDistance) {
+        CHUNK_RENDER_DISTANCE = NEWchunkRenderDistance;
+    }
 
     @Override
     public void dispose() {

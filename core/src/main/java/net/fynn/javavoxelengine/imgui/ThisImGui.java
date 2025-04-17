@@ -10,7 +10,7 @@ import imgui.flag.ImGuiWindowFlags;
 import imgui.gl3.ImGuiImplGl3;
 import imgui.glfw.ImGuiImplGlfw;
 import imgui.type.ImBoolean;
-import imgui.type.ImInt;
+import net.fynn.javavoxelengine.VoxelEngine;
 import org.lwjgl.glfw.GLFW;
 import org.lwjgl.opengl.GL;
 import com.badlogic.gdx.graphics.Camera;
@@ -29,7 +29,7 @@ public class ThisImGui {
     private final ImBoolean showDebugWindow = new ImBoolean(true);
 
     // Application options
-    private final ImInt renderDistance = new ImInt(8); // in chunks
+    private final float[] renderDistance = new float[]{VoxelEngine.CHUNK_RENDER_DISTANCE}; // in chunks
 
     public ThisImGui() {
         create();
@@ -79,7 +79,6 @@ public class ThisImGui {
                 ImGui.endTabItem();
             }
             if (ImGui.beginTabItem("Options")) {
-                //ImGui.sliderInt("Render Distance (chunks)", renderDistance, 1, 32);
                 ImGui.text("TODO: RENDER DISTANCE");
                 ImGui.endTabItem();
             }
