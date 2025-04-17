@@ -26,7 +26,4 @@ Dieses Projekt zeigt die Entwicklung einer Voxel Engine in Java. Hier sind die w
 
 Hier ist eine Video-Demonstration des Projekts:
 
-<video width="640" height="480" controls>
-  <source src="readme_images/JavaVoxelEngine%202025-04-17%2013-02-52.mp4" type="video/mp4">
-  Ihr Browser unterstützt das Video-Tag nicht.
-</video>
+[Video Demonstration](readme_images/JavaVoxelEngine%202025-04-17%2013-02-52.mp4)
