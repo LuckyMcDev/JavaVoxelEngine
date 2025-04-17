@@ -18,6 +18,13 @@ import net.fynn.javavoxelengine.world.ChunkGrid;
 import net.fynn.javavoxelengine.world.VoxelModelCache;
 import net.fynn.javavoxelengine.world.VoxelType;
 
+/**
+ * Hauptklasse der Voxel-Engine.
+ * Diese Klasse initialisiert und verwaltet die Voxel-Welt und die Benutzeroberfläche.
+ *
+ * @author Fynn
+ * @version 1.0
+ */
 public class VoxelEngine extends ApplicationAdapter {
 
     private ThisImGui thisImGui;
@@ -29,9 +36,12 @@ public class VoxelEngine extends ApplicationAdapter {
     private ChunkGrid chunkGrid;
     private Frustum frustum;
 
-    public static float CHUNK_RENDER_DISTANCE = 200f;
-    private static float CHUNK_RENDER_DISTANCE_SQUARED = CHUNK_RENDER_DISTANCE * CHUNK_RENDER_DISTANCE;
+    private static final float CHUNK_RENDER_DISTANCE = 200f;
+    private static final float CHUNK_RENDER_DISTANCE_SQUARED = CHUNK_RENDER_DISTANCE * CHUNK_RENDER_DISTANCE;
 
+    /**
+     * Initialisiert die Voxel-Engine und deren Komponenten.
+     */
     @Override
     public void create() {
         modelBatch = new ModelBatch();
@@ -53,11 +63,14 @@ public class VoxelEngine extends ApplicationAdapter {
 
         VoxelModelCache.initialize(1f, 1f, 1f);
 
-        chunkGrid = new ChunkGrid(10, 10, 1237161111); // no chunkSize needed now
+        chunkGrid = new ChunkGrid(10, 10, 1237161111); // Keine Chunk-Größe mehr nötig
 
         thisImGui = new ThisImGui();
     }
 
+    /**
+     * Render-Methode, die die Voxel-Welt und die Benutzeroberfläche zeichnet.
+     */
     @Override
     public void render() {
         camController.update();
@@ -66,7 +79,7 @@ public class VoxelEngine extends ApplicationAdapter {
 
         modelBatch.begin(camera);
 
-        int renderedModelCount = 0;       // ← reset counter
+        int renderedModelCount = 0;       // Zähler zurücksetzen
 
         for (Chunk chunk : chunkGrid.getChunks()) {
             if (!shouldRenderChunk(chunk)) continue;
@@ -74,7 +87,7 @@ public class VoxelEngine extends ApplicationAdapter {
             Array<ModelInstance> voxelInstances = new Array<>();
             generateVoxelInstances(chunk, voxelInstances);
 
-            // render and count
+            // Rendern und zählen
             for (ModelInstance instance : voxelInstances) {
                 modelBatch.render(instance, environment);
                 renderedModelCount++;
@@ -83,10 +96,16 @@ public class VoxelEngine extends ApplicationAdapter {
 
         modelBatch.end();
 
-        // now pass the count into your ImGui
+        // Zähler an ImGui übergeben
         thisImGui.render(camera, renderedModelCount);
     }
 
+    /**
+     * Bestimmt, ob ein Chunk basierend auf der Entfernung gerendert werden soll.
+     *
+     * @param chunk Der zu überprüfende Chunk.
+     * @return True, wenn der Chunk gerendert werden soll, sonst false.
+     */
     private boolean shouldRenderChunk(Chunk chunk) {
         float dx = camera.position.x - (chunk.originX + Chunk.WIDTH / 2f);
         float dz = camera.position.z - (chunk.originZ + Chunk.DEPTH / 2f);
@@ -96,17 +115,29 @@ public class VoxelEngine extends ApplicationAdapter {
         return isChunkVisible(chunk);
     }
 
+    /**
+     * Überprüft, ob ein Chunk im Sichtfeld der Kamera liegt.
+     *
+     * @param chunk Der zu überprüfende Chunk.
+     * @return True, wenn der Chunk sichtbar ist, sonst false.
+     */
     private boolean isChunkVisible(Chunk chunk) {
         BoundingBox chunkBox = chunk.getBoundingBox();
         return frustum.boundsInFrustum(chunkBox);
     }
 
+    /**
+     * Generiert Voxel-Instanzen für einen gegebenen Chunk.
+     *
+     * @param chunk Der Chunk, für den Instanzen generiert werden sollen.
+     * @param voxelInstances Liste, in die die generierten Instanzen gespeichert werden.
+     */
     private void generateVoxelInstances(Chunk chunk, Array<ModelInstance> voxelInstances) {
         final int W = Chunk.WIDTH, H = Chunk.HEIGHT, D = Chunk.DEPTH;
         boolean[][][] visited = new boolean[W][H][D];
 
-        // helper to test voxel eligibility
-        Predicate3<Integer,Integer,Integer> isEligible = (x, y, z) -> !visited[x][y][z] && chunk.getBlock(x, y, z) != null && chunk.getBlock(x, y, z).isVisible() /*&& isBlockExposedToAir(chunk, x, y, z)*/;
+        // Hilfsfunktion zur Überprüfung der Voxel-Eignung
+        Predicate3<Integer,Integer,Integer> isEligible = (x, y, z) -> !visited[x][y][z] && chunk.getBlock(x, y, z) != null && chunk.getBlock(x, y, z).isVisible();
 
         for (int x = 0; x < W; x++) {
             for (int y = 0; y < H; y++) {
@@ -115,14 +146,14 @@ public class VoxelEngine extends ApplicationAdapter {
 
                     VoxelType type = chunk.getBlock(x, y, z);
 
-                    // 1) Grow along X
+                    // 1) Wachsen entlang der X-Achse
                     int dx = 1;
                     while (x + dx < W && isEligible.test(x + dx, y, z)
                         && chunk.getBlock(x + dx, y, z) == type) {
                         dx++;
                     }
 
-                    // 2) Grow along Y (all x in [x..x+dx) must match for each new y)
+                    // 2) Wachsen entlang der Y-Achse
                     int dy = 1;
                     outerY:
                     while (y + dy < H) {
@@ -135,7 +166,7 @@ public class VoxelEngine extends ApplicationAdapter {
                         dy++;
                     }
 
-                    // 3) Grow along Z (all x,y in the dx×dy block must match for each new z)
+                    // 3) Wachsen entlang der Z-Achse
                     int dz = 1;
                     outerZ:
                     while (z + dz < D) {
@@ -150,7 +181,7 @@ public class VoxelEngine extends ApplicationAdapter {
                         dz++;
                     }
 
-                    // mark visited
+                    // Als besucht markieren
                     for (int xi = 0; xi < dx; xi++) {
                         for (int yi = 0; yi < dy; yi++) {
                             for (int zi = 0; zi < dz; zi++) {
@@ -159,12 +190,12 @@ public class VoxelEngine extends ApplicationAdapter {
                         }
                     }
 
-                    // create one instance scaled to cover dx×dy×dz
+                    // Eine Instanz erstellen, die den dx×dy×dz-Bereich abdeckt
                     Model model = VoxelModelCache.getModel(type);
                     if (model != null) {
                         ModelInstance inst = new ModelInstance(model);
 
-                        // world‐space center of the block
+                        // Weltkoordinaten des Blockzentrums
                         float cx = chunk.originX + x + (dx - 1) * 0.5f;
                         float cy = chunk.originY + y + (dy - 1) * 0.5f;
                         float cz = chunk.originZ + z + (dz - 1) * 0.5f;
@@ -179,32 +210,36 @@ public class VoxelEngine extends ApplicationAdapter {
         }
     }
 
-    // Simple three‐arg predicate for brevity
+    // Einfaches Drei-Argument-Prädikat
     @FunctionalInterface
     private interface Predicate3<A,B,C> {
         boolean test(A a, B b, C c);
     }
 
+    /**
+     * Überprüft, ob ein Block der Luft ausgesetzt ist.
+     *
+     * @param chunk Der Chunk, der den Block enthält.
+     * @param x Die X-Koordinate des Blocks.
+     * @param y Die Y-Koordinate des Blocks.
+     * @param z Die Z-Koordinate des Blocks.
+     * @return True, wenn der Block der Luft ausgesetzt ist, sonst false.
+     */
     private boolean isBlockExposedToAir(Chunk chunk, int x, int y, int z) {
         if (chunk.getBlock(x, y, z) == VoxelType.AIR) return false;
 
-        // Correct neighbor checks (6 directions)
-        if (y < Chunk.HEIGHT - 1 && chunk.getBlock(x, y + 10, z) == VoxelType.AIR) return true; // Up
-        if (y > 0 && chunk.getBlock(x, y - 1, z) == VoxelType.AIR) return true; // Down
-        if (x < Chunk.WIDTH - 1 && chunk.getBlock(x + 1, y, z) == VoxelType.AIR) return true; // Right
-        if (x > 0 && chunk.getBlock(x - 1, y, z) == VoxelType.AIR) return true; // Left
-        if (z < Chunk.DEPTH - 1 && chunk.getBlock(x, y, z + 1) == VoxelType.AIR) return true; // Forward
-        return z > 0 && chunk.getBlock(x, y, z - 1) == VoxelType.AIR; // Backward
+        // Korrekte Nachbarprüfungen (6 Richtungen)
+        if (y < Chunk.HEIGHT - 1 && chunk.getBlock(x, y + 10, z) == VoxelType.AIR) return true; // Oben
+        if (y > 0 && chunk.getBlock(x, y - 1, z) == VoxelType.AIR) return true; // Unten
+        if (x < Chunk.WIDTH - 1 && chunk.getBlock(x + 1, y, z) == VoxelType.AIR) return true; // Rechts
+        if (x > 0 && chunk.getBlock(x - 1, y, z) == VoxelType.AIR) return true; // Links
+        if (z < Chunk.DEPTH - 1 && chunk.getBlock(x, y, z + 1) == VoxelType.AIR) return true; // Vorne
+        return z > 0 && chunk.getBlock(x, y, z - 1) == VoxelType.AIR; // Hinten
     }
 
-    public float getChunkRenderDistance() {
-        return CHUNK_RENDER_DISTANCE;
-    }
-
-    public void setChunkRenderDistance(float NEWchunkRenderDistance) {
-        CHUNK_RENDER_DISTANCE = NEWchunkRenderDistance;
-    }
-
+    /**
+     * Gibt Ressourcen frei, die von der Voxel-Engine verwendet werden.
+     */
     @Override
     public void dispose() {
         modelBatch.dispose();

@@ -6,15 +6,18 @@ import com.badlogic.gdx.graphics.g3d.Model;
 import com.badlogic.gdx.graphics.g3d.attributes.ColorAttribute;
 import com.badlogic.gdx.graphics.g3d.utils.ModelBuilder;
 
+/**
+ * Utility-Klasse zur Erstellung von Voxel-Modellen.
+ */
 public class Voxel {
     /**
-     * Creates a cube model using the specified voxel type.
+     * Erstellt ein Würfelmodell unter Verwendung des angegebenen Voxeltyps.
      *
-     * @param width     the width of the cube.
-     * @param height    the height of the cube.
-     * @param depth     the depth of the cube.
-     * @param voxelType the voxel type to use for color and properties.
-     * @return a Model representing a cube of that type, or null if AIR.
+     * @param width     Die Breite des Würfels.
+     * @param height    Die Höhe des Würfels.
+     * @param depth     Die Tiefe des Würfels.
+     * @param voxelType Der Voxeltyp, der für Farbe und Eigenschaften verwendet wird.
+     * @return Ein Modell, das einen Würfel dieses Typs darstellt, oder null, wenn es sich um Luft handelt.
      */
     public static Model createCube(float width, float height, float depth, VoxelType voxelType) {
         if (voxelType == null || !voxelType.isVisible()) return null;

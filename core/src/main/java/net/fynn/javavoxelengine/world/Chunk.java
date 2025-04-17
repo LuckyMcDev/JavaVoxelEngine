@@ -7,9 +7,16 @@ import make.some.noise.Noise;
 
 import java.util.Random;
 
+/**
+ * Repräsentiert einen Chunk in der Voxel-Welt.
+ * Ein Chunk besteht aus einem 3D-Array von Voxeltypen und hat eine feste Größe.
+ */
 public class Chunk {
+    /**Die Weite des Chunks*/
     public static final int WIDTH = 48;
+    /**Die Länge des Chunks*/
     public static final int DEPTH = 48;
+    /**Die Höhe des Chunks*/
     public static final int HEIGHT = 48;
 
     private static final int TRUNK_HEIGHT = 4;
@@ -19,23 +26,13 @@ public class Chunk {
     public final int originX, originY, originZ;
     private BoundingBox boundingBox;
 
-    private void createBoundingBox() {
-        Vector3 min = new Vector3(originX, originY, originZ);
-        Vector3 max = new Vector3(originX + WIDTH, originY + HEIGHT, originZ + DEPTH);
-        boundingBox = new BoundingBox(min, max);
-    }
-
-    public BoundingBox getBoundingBox() {
-        return boundingBox;
-    }
-
     /**
-     * Creates a new chunk and generates its terrain using noise.
+     * Erstellt einen neuen Chunk und generiert dessen Gelände unter Verwendung von Rauschen.
      *
-     * @param seed The seed for the noise generator.
-     * @param originX The x-coordinate of the chunk's origin.
-     * @param originY The y-coordinate of the chunk's origin.
-     * @param originZ The z-coordinate of the chunk's origin.
+     * @param seed Der Seed für den Perlin Generator.
+     * @param originX Die X-Koordinate des Ursprungs des Chunks.
+     * @param originY Die Y-Koordinate des Ursprungs des Chunks.
+     * @param originZ Die Z-Koordinate des Ursprungs des Chunks.
      */
     public Chunk(int seed, int originX, int originY, int originZ) {
         this.originX = originX;
@@ -47,21 +44,44 @@ public class Chunk {
         createBoundingBox();
     }
 
+    /**
+     * Erstellt die Begrenzungsbox für den Chunk.
+     */
+    private void createBoundingBox() {
+        Vector3 min = new Vector3(originX, originY, originZ);
+        Vector3 max = new Vector3(originX + WIDTH, originY + HEIGHT, originZ + DEPTH);
+        boundingBox = new BoundingBox(min, max);
+    }
+
+    /**
+     * Gibt die Begrenzungsbox des Chunks zurück.
+     *
+     * @return Die Begrenzungsbox des Chunks.
+     */
+    public BoundingBox getBoundingBox() {
+        return boundingBox;
+    }
+
+    /**
+     * Generiert das Gelände des Chunks unter Verwendung von Perlin-Rauschen.
+     *
+     * @param seed Der Seed für den Perlin Generator.
+     */
     private void generateTerrain(int seed) {
-        // Create a noise generator (MakeSomeNoise library) with the given seed.
+        // Erstellen eines Generator (MakeSomeNoise-Bibliothek) mit dem angegebenen Seed.
         Noise noise = new Noise(seed);
 
-        // Parameters: Scale the noise coordinates and choose a maximum height.
-        int maxTerrainHeight = HEIGHT - 20; // e.g., 255/4 ~ 63 blocks maximum terrain height
+        // Parameter: Skalieren der Rauschkoordinaten und Auswahl einer maximalen Höhe.
+        int maxTerrainHeight = HEIGHT - 20; // z.B. 255/4 ~ 63 Blöcke maximale Geländehöhe
 
         for (int x = 0; x < WIDTH; x++) {
             for (int z = 0; z < DEPTH; z++) {
-                // Generate a noise value (in [-1,1]) and normalize it to [0, 1].
+                // Generieren eines Rauschwerts (in [-1,1]) und Normalisieren auf [0, 1].
                 double n = noise.getPerlin((originX + x), (originZ + z));
                 int terrainHeight = (int) (((n + 1) / 2) * maxTerrainHeight);
                 for (int y = 0; y < HEIGHT; y++) {
                     if (y <= terrainHeight) {
-                        // Simple layering:
+                        // Einfache Schichtung:
                         if (y < terrainHeight - 3) {
                             blocks[x][y][z] = VoxelType.STONE;
                         } else if (y < terrainHeight) {
@@ -77,32 +97,36 @@ public class Chunk {
         }
     }
 
-
+    /**
+     * Generiert Bäume im Chunk.
+     *
+     * @param seed Der Seed für die zufällige Generierung.
+     */
     private void generateTrees(int seed) {
-        // mix origin into the RNG so each chunk is deterministic
+        // Mischen des Ursprungs in den RNG, damit jeder Chunk deterministisch ist
         long mix = ((long)originX * 73856093L) ^ ((long)originZ * 19349663L) ^ seed;
         Random rand = new Random(mix);
 
-        // 50/50 chance to spawn one tree
+        // 50/50 Chance, einen Baum zu spawnen
         if (!rand.nextBoolean()) return;
 
-        // pick a random x,z inside this chunk
+        // Wähle zufällige x,z innerhalb dieses Chunks
         int tx = rand.nextInt(WIDTH);
         int tz = rand.nextInt(DEPTH);
 
-        // find the surface Y (first non‐air from the top)
+        // Finde die Oberflächen-Y (erster Nicht-Luft-Block von oben)
         int ty = getSurfaceHeight(tx, tz);
         if (ty < 0 || ty + TRUNK_HEIGHT + LEAF_RADIUS >= HEIGHT) return;
 
-        // build the trunk
+        // Baue den Stamm
         for (int i = 1; i <= TRUNK_HEIGHT; i++) {
             setBlock(tx, ty + i, tz, VoxelType.WOOD);
         }
 
-        // build a simple leaf crown
+        // Baue eine einfache Blattkrone
         for (int dx = -LEAF_RADIUS; dx <= LEAF_RADIUS; dx++) {
             for (int dz = -LEAF_RADIUS; dz <= LEAF_RADIUS; dz++) {
-                // a little clover‑shape using Manhattan distance
+                // Eine kleine Kleeblattform unter Verwendung der Manhattan-Distanz
                 if (Math.abs(dx) + Math.abs(dz) <= LEAF_RADIUS) {
                     int lx = tx + dx;
                     int lz = tz + dz;
@@ -117,7 +141,7 @@ public class Chunk {
         }
     }
 
-    // helper to find the topmost solid block:
+    // Hilfsmethode zur Ermittlung der obersten festen Blockhöhe
     private int getSurfaceHeight(int x, int z) {
         for (int y = HEIGHT - 1; y >= 0; y--) {
             VoxelType t = getBlock(x, y, z);
@@ -126,7 +150,7 @@ public class Chunk {
         return -1;
     }
 
-    // simple bounds‐check
+    // Einfache Grenzprüfung
     private boolean inBounds(int x, int y, int z) {
         return x >= 0 && x < WIDTH
             && y >= 0 && y < HEIGHT
@@ -134,7 +158,12 @@ public class Chunk {
     }
 
     /**
-     * Safely writes into the blocks array.
+     * Schreibt sicher in das Block-Array.
+     *
+     * @param x Die X-Koordinate des Blocks.
+     * @param y Die Y-Koordinate des Blocks.
+     * @param z Die Z-Koordinate des Blocks.
+     * @param type Der Voxeltyp des Blocks.
      */
     public void setBlock(int x, int y, int z, VoxelType type) {
         if (inBounds(x, y, z)) {
@@ -142,6 +171,14 @@ public class Chunk {
         }
     }
 
+    /**
+     * Gibt den Voxeltyp an einer bestimmten Position zurück.
+     *
+     * @param x Die X-Koordinate des Blocks.
+     * @param y Die Y-Koordinate des Blocks.
+     * @param z Die Z-Koordinate des Blocks.
+     * @return Der Voxeltyp an der angegebenen Position.
+     */
     public VoxelType getBlock(int x, int y, int z) {
         return blocks[x][y][z];
     }

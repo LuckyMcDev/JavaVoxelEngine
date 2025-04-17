@@ -10,31 +10,37 @@ import imgui.flag.ImGuiWindowFlags;
 import imgui.gl3.ImGuiImplGl3;
 import imgui.glfw.ImGuiImplGlfw;
 import imgui.type.ImBoolean;
-import net.fynn.javavoxelengine.VoxelEngine;
+import imgui.type.ImInt;
 import org.lwjgl.glfw.GLFW;
 import org.lwjgl.opengl.GL;
 import com.badlogic.gdx.graphics.Camera;
 
 /**
- * Wraps Dear ImGui integration, with toggleable windows and debug/info panels.
+ * Wrappt die Dear ImGui-Integration mit ein- und ausschaltbaren Fenstern und Debug/Info-Panels.
  */
 public class ThisImGui {
 
     private final ImGuiImplGlfw imGuiGlfw = new ImGuiImplGlfw();
     private final ImGuiImplGl3 imGuiGl3 = new ImGuiImplGl3();
 
-    // Window visibility flags
+    // Sichtbarkeitsflags für Fenster
     private final ImBoolean showDemoWindow = new ImBoolean(false);
     private final ImBoolean showOptionsWindow = new ImBoolean(false);
     private final ImBoolean showDebugWindow = new ImBoolean(true);
 
-    // Application options
-    private final float[] renderDistance = new float[]{VoxelEngine.CHUNK_RENDER_DISTANCE}; // in chunks
+    // Anwendungsoptionen
+    private final ImInt renderDistance = new ImInt(8); // in Chunks
 
+    /**
+     * Erstellt eine neue Instanz von ThisImGui und initialisiert die ImGui-Komponenten.
+     */
     public ThisImGui() {
         create();
     }
 
+    /**
+     * Initialisiert die ImGui-Komponenten.
+     */
     private void create() {
         long windowHandle = ((Lwjgl3Graphics) Gdx.graphics).getWindow().getWindowHandle();
         GLFW.glfwMakeContextCurrent(windowHandle);
@@ -49,10 +55,10 @@ public class ThisImGui {
     }
 
     /**
-     * Render all ImGui elements. Should be called each frame.
+     * Rendert alle ImGui-Elemente. Sollte in jedem Frame aufgerufen werden.
      *
-     * @param camera             the current game camera (for positioning info)
-     * @param renderedModelCount number of model instances rendered this frame
+     * @param camera             Die aktuelle Spielkamera (zur Positionierung von Infos).
+     * @param renderedModelCount Anzahl der in diesem Frame gerenderten Modellinstanzen.
      */
     public void render(Camera camera, int renderedModelCount) {
         imGuiGlfw.newFrame();
@@ -67,6 +73,9 @@ public class ThisImGui {
         imGuiGl3.renderDrawData(ImGui.getDrawData());
     }
 
+    /**
+     * Rendert die Haupt-Tab-Leiste mit Steuerelementen.
+     */
     private void renderMainTabBar() {
         ImGui.setNextWindowSize(200,300);
         ImGui.setNextWindowPos(0,0);
@@ -79,6 +88,7 @@ public class ThisImGui {
                 ImGui.endTabItem();
             }
             if (ImGui.beginTabItem("Options")) {
+                //ImGui.sliderInt("Render Distance (chunks)", renderDistance, 1, 32);
                 ImGui.text("TODO: RENDER DISTANCE");
                 ImGui.endTabItem();
             }
@@ -87,25 +97,37 @@ public class ThisImGui {
         ImGui.end();
     }
 
+    /**
+     * Rendert das Demo-Fenster, wenn es sichtbar ist.
+     */
     private void renderDemoWindow() {
         if (showDemoWindow.get()) {
             ImGui.showDemoWindow(showDemoWindow);
         }
     }
 
+    /**
+     * Rendert das Optionsfenster, wenn es sichtbar ist.
+     */
     private void renderOptionsWindow() {
         if (!showOptionsWindow.get()) return;
         ImGui.begin("Options", showOptionsWindow, ImGuiWindowFlags.None);
-        ImGui.text("Graphics Options");
+        ImGui.text("Grafikoptionen");
         //ImGui.sliderInt("Render Distance", renderDistance, 1, 32);
         ImGui.text("TODO: RENDER DISTANCE");
-        // TODO: apply `renderDistance.get()` to your chunk renderer
+        // TODO: Anwenden von `renderDistance.get()` auf Ihren Chunk-Renderer
         ImGui.end();
     }
 
+    /**
+     * Rendert das Debug-Fenster, wenn es sichtbar ist.
+     *
+     * @param camera             Die aktuelle Spielkamera.
+     * @param renderedModelCount Anzahl der gerenderten Modellinstanzen.
+     */
     private void renderDebugWindow(Camera camera, int renderedModelCount) {
         if (!showDebugWindow.get()) return;
-        // pin to bottom
+        // Unten fixieren
         ImGui.setNextWindowPos(0, Gdx.graphics.getHeight() - 100, ImGuiCond.Always);
         ImGui.setNextWindowSize(Gdx.graphics.getWidth(), 100, ImGuiCond.Always);
         ImGui.begin("Debug Info", showDebugWindow,
@@ -116,10 +138,12 @@ public class ThisImGui {
         ImGui.text(String.format(
             "Camera Position: X=%.2f, Y=%.2f, Z=%.2f",
             camera.position.x, camera.position.y, camera.position.z));
-        // add more metrics as needed
         ImGui.end();
     }
 
+    /**
+     * Gibt die von ImGui verwendeten Ressourcen frei.
+     */
     public void dispose() {
         imGuiGl3.dispose();
         imGuiGlfw.dispose();
