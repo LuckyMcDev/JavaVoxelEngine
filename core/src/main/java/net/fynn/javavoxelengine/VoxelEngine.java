@@ -106,7 +106,7 @@ public class VoxelEngine extends ApplicationAdapter {
      * @param chunk Der zu überprüfende Chunk.
      * @return True, wenn der Chunk gerendert werden soll, sonst false.
      */
-    private boolean shouldRenderChunk(Chunk chunk) {
+    public boolean shouldRenderChunk(Chunk chunk) {
         float dx = camera.position.x - (chunk.originX + Chunk.WIDTH / 2f);
         float dz = camera.position.z - (chunk.originZ + Chunk.DEPTH / 2f);
         float distanceSquared = dx * dx + dz * dz;
@@ -121,7 +121,7 @@ public class VoxelEngine extends ApplicationAdapter {
      * @param chunk Der zu überprüfende Chunk.
      * @return True, wenn der Chunk sichtbar ist, sonst false.
      */
-    private boolean isChunkVisible(Chunk chunk) {
+    public boolean isChunkVisible(Chunk chunk) {
         BoundingBox chunkBox = chunk.getBoundingBox();
         return frustum.boundsInFrustum(chunkBox);
     }
@@ -132,7 +132,7 @@ public class VoxelEngine extends ApplicationAdapter {
      * @param chunk Der Chunk, für den Instanzen generiert werden sollen.
      * @param voxelInstances Liste, in die die generierten Instanzen gespeichert werden.
      */
-    private void generateVoxelInstances(Chunk chunk, Array<ModelInstance> voxelInstances) {
+    public void generateVoxelInstances(Chunk chunk, Array<ModelInstance> voxelInstances) {
         final int W = Chunk.WIDTH, H = Chunk.HEIGHT, D = Chunk.DEPTH;
         boolean[][][] visited = new boolean[W][H][D];
 
@@ -225,7 +225,7 @@ public class VoxelEngine extends ApplicationAdapter {
      * @param z Die Z-Koordinate des Blocks.
      * @return True, wenn der Block der Luft ausgesetzt ist, sonst false.
      */
-    private boolean isBlockExposedToAir(Chunk chunk, int x, int y, int z) {
+    public boolean isBlockExposedToAir(Chunk chunk, int x, int y, int z) {
         if (chunk.getBlock(x, y, z) == VoxelType.AIR) return false;
 
         // Korrekte Nachbarprüfungen (6 Richtungen)
