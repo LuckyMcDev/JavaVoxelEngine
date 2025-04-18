@@ -2,15 +2,21 @@ package net.fynn.javavoxelengine;
 
 import com.badlogic.gdx.ApplicationAdapter;
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.Input;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.g3d.*;
 import com.badlogic.gdx.graphics.g3d.attributes.ColorAttribute;
 import com.badlogic.gdx.graphics.g3d.environment.*;
 import com.badlogic.gdx.math.Frustum;
+import com.badlogic.gdx.math.collision.Ray;
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.math.collision.BoundingBox;
 
+import net.fynn.javavoxelengine.challenge.AppleCollector;
+import net.fynn.javavoxelengine.challenge.ChallengeManager;
+import net.fynn.javavoxelengine.challenge.ChallengeType;
 import net.fynn.javavoxelengine.imgui.ThisImGui;
+import net.fynn.javavoxelengine.player.Crosshair;
 import net.fynn.javavoxelengine.player.Player;
 import net.fynn.javavoxelengine.world.Chunk;
 import net.fynn.javavoxelengine.world.ChunkGrid;
@@ -33,6 +39,9 @@ public class VoxelEngine extends ApplicationAdapter {
     private ChunkGrid chunkGrid;
     private Frustum frustum;
     private Player player;
+    private ChallengeManager challengeManager;
+    private AppleCollector appleCollector;
+    private Crosshair crosshair;
 
     private static final float CHUNK_RENDER_DISTANCE = 150f;
     private static final float CHUNK_RENDER_DISTANCE_SQUARED = CHUNK_RENDER_DISTANCE * CHUNK_RENDER_DISTANCE;
@@ -54,6 +63,14 @@ public class VoxelEngine extends ApplicationAdapter {
         player = new Player(chunkGrid);
         frustum = player.getCamera().frustum;
 
+        challengeManager = new ChallengeManager();
+
+        challengeManager.start(ChallengeType.EASY);
+
+        appleCollector = new AppleCollector();
+
+        crosshair = new Crosshair();
+
         thisImGui = new ThisImGui();
     }
 
@@ -63,13 +80,15 @@ public class VoxelEngine extends ApplicationAdapter {
     @Override
     public void render() {
         Gdx.gl.glViewport(0, 0, Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
+        Gdx.gl.glClearColor(137f / 255f, 207f / 255f, 240f / 255f, 1f);
         Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT | GL20.GL_DEPTH_BUFFER_BIT);
 
         player.update(Gdx.graphics.getDeltaTime());
+
+        challengeManager.update();
+
         modelBatch.begin(player.getCamera());
-
         int renderedModelCount = 0;       // Zähler zurücksetzen
-
         for (Chunk chunk : chunkGrid.getChunks()) {
             if (!shouldRenderChunk(chunk)) continue;
 
@@ -82,10 +101,13 @@ public class VoxelEngine extends ApplicationAdapter {
                 renderedModelCount++;
             }
         }
-
         modelBatch.end();
 
-        // Zähler an ImGui übergeben
+        crosshair.render();
+
+        appleCollector.tryCollectApple(player.getCamera(),)
+
+        // Model count an ImGui übergeben
         thisImGui.render(player.getCamera(), renderedModelCount);
     }
 
@@ -233,6 +255,7 @@ public class VoxelEngine extends ApplicationAdapter {
     public void dispose() {
         modelBatch.dispose();
         VoxelModelCache.dispose();
+        crosshair.dispose();
         thisImGui.dispose();
     }
 }
