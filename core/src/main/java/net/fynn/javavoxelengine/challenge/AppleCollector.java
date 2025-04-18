@@ -3,7 +3,7 @@ package net.fynn.javavoxelengine.challenge;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.PerspectiveCamera;
 import com.badlogic.gdx.math.collision.Ray;
-import net.fynn.javavoxelengine.world.Chunk;
+import net.fynn.javavoxelengine.chunk.Chunk;
 import net.fynn.javavoxelengine.world.VoxelType;
 
 public class AppleCollector {

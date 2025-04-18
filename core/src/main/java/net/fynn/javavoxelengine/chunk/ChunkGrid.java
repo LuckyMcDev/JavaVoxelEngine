@@ -1,4 +1,4 @@
-package net.fynn.javavoxelengine.world;
+package net.fynn.javavoxelengine.chunk;
 
 import com.badlogic.gdx.utils.Array;
 

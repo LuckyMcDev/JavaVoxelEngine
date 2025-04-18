@@ -1,9 +1,10 @@
-package net.fynn.javavoxelengine.world;
+package net.fynn.javavoxelengine.chunk;
 
 import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.math.collision.BoundingBox;
 
 import make.some.noise.Noise;
+import net.fynn.javavoxelengine.world.VoxelType;
 
 import java.util.Random;
 

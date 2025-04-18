@@ -71,10 +71,10 @@ loadScripts(document, 'script');</script>
 <ol class="toc-list">
 <li><a href="#create()" tabindex="0">create()</a></li>
 <li><a href="#render()" tabindex="0">render()</a></li>
-<li><a href="#shouldRenderChunk(net.fynn.javavoxelengine.world.Chunk)" tabindex="0">shouldRenderChunk(Chunk)</a></li>
-<li><a href="#isChunkVisible(net.fynn.javavoxelengine.world.Chunk)" tabindex="0">isChunkVisible(Chunk)</a></li>
-<li><a href="#generateVoxelInstances(net.fynn.javavoxelengine.world.Chunk,com.badlogic.gdx.utils.Array)" tabindex="0">generateVoxelInstances(Chunk, Array)</a></li>
-<li><a href="#isBlockExposedToAir(net.fynn.javavoxelengine.world.Chunk,int,int,int)" tabindex="0">isBlockExposedToAir(Chunk, int, int, int)</a></li>
+<li><a href="#shouldRenderChunk(net.fynn.javavoxelengine.chunk.Chunk)" tabindex="0">shouldRenderChunk(Chunk)</a></li>
+<li><a href="#isChunkVisible(net.fynn.javavoxelengine.chunk.Chunk)" tabindex="0">isChunkVisible(Chunk)</a></li>
+<li><a href="#generateVoxelInstances(net.fynn.javavoxelengine.chunk.Chunk,com.badlogic.gdx.utils.Array)" tabindex="0">generateVoxelInstances(Chunk, Array)</a></li>
+<li><a href="#isBlockExposedToAir(net.fynn.javavoxelengine.chunk.Chunk,int,int,int)" tabindex="0">isBlockExposedToAir(Chunk, int, int, int)</a></li>
 <li><a href="#dispose()" tabindex="0">dispose()</a></li>
 </ol>
 </li>
@@ -140,13 +140,13 @@ loadScripts(document, 'script');</script>
 <div class="block">Gibt Ressourcen frei, die von der Voxel-Engine verwendet werden.</div>
 </div>
 <div class="col-first even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code>void</code></div>
-<div class="col-second even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="#generateVoxelInstances(net.fynn.javavoxelengine.world.Chunk,com.badlogic.gdx.utils.Array)" class="member-name-link">generateVoxelInstances</a><wbr>(<a href="world/Chunk.html" title="Klasse in net.fynn.javavoxelengine.world">Chunk</a>&nbsp;chunk,
+<div class="col-second even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="#generateVoxelInstances(net.fynn.javavoxelengine.chunk.Chunk,com.badlogic.gdx.utils.Array)" class="member-name-link">generateVoxelInstances</a><wbr>(<a href="world/Chunk.html" title="Klasse in net.fynn.javavoxelengine.world">Chunk</a>&nbsp;chunk,
  com.badlogic.gdx.utils.Array&lt;com.badlogic.gdx.graphics.g3d.ModelInstance&gt;&nbsp;voxelInstances)</code></div>
 <div class="col-last even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4">
 <div class="block">Generiert Voxel-Instanzen für einen gegebenen Chunk.</div>
 </div>
 <div class="col-first odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code>boolean</code></div>
-<div class="col-second odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="#isBlockExposedToAir(net.fynn.javavoxelengine.world.Chunk,int,int,int)" class="member-name-link">isBlockExposedToAir</a><wbr>(<a href="world/Chunk.html" title="Klasse in net.fynn.javavoxelengine.world">Chunk</a>&nbsp;chunk,
+<div class="col-second odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="#isBlockExposedToAir(net.fynn.javavoxelengine.chunk.Chunk,int,int,int)" class="member-name-link">isBlockExposedToAir</a><wbr>(<a href="world/Chunk.html" title="Klasse in net.fynn.javavoxelengine.world">Chunk</a>&nbsp;chunk,
  int&nbsp;x,
  int&nbsp;y,
  int&nbsp;z)</code></div>
@@ -154,7 +154,7 @@ loadScripts(document, 'script');</script>
 <div class="block">Überprüft, ob ein Block der Luft ausgesetzt ist.</div>
 </div>
 <div class="col-first even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code>boolean</code></div>
-<div class="col-second even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="#isChunkVisible(net.fynn.javavoxelengine.world.Chunk)" class="member-name-link">isChunkVisible</a><wbr>(<a href="world/Chunk.html" title="Klasse in net.fynn.javavoxelengine.world">Chunk</a>&nbsp;chunk)</code></div>
+<div class="col-second even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="#isChunkVisible(net.fynn.javavoxelengine.chunk.Chunk)" class="member-name-link">isChunkVisible</a><wbr>(<a href="world/Chunk.html" title="Klasse in net.fynn.javavoxelengine.world">Chunk</a>&nbsp;chunk)</code></div>
 <div class="col-last even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4">
 <div class="block">Überprüft, ob ein Chunk im Sichtfeld der Kamera liegt.</div>
 </div>
@@ -164,7 +164,7 @@ loadScripts(document, 'script');</script>
 <div class="block">Render-Methode, die die Voxel-Welt und die Benutzeroberfläche zeichnet.</div>
 </div>
 <div class="col-first even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code>boolean</code></div>
-<div class="col-second even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="#shouldRenderChunk(net.fynn.javavoxelengine.world.Chunk)" class="member-name-link">shouldRenderChunk</a><wbr>(<a href="world/Chunk.html" title="Klasse in net.fynn.javavoxelengine.world">Chunk</a>&nbsp;chunk)</code></div>
+<div class="col-second even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="#shouldRenderChunk(net.fynn.javavoxelengine.chunk.Chunk)" class="member-name-link">shouldRenderChunk</a><wbr>(<a href="world/Chunk.html" title="Klasse in net.fynn.javavoxelengine.world">Chunk</a>&nbsp;chunk)</code></div>
 <div class="col-last even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4">
 <div class="block">Bestimmt, ob ein Chunk basierend auf der Entfernung gerendert werden soll.</div>
 </div>
@@ -235,7 +235,7 @@ loadScripts(document, 'script');</script>
 </section>
 </li>
 <li>
-<section class="detail" id="shouldRenderChunk(net.fynn.javavoxelengine.world.Chunk)">
+<section class="detail" id="shouldRenderChunk(net.fynn.javavoxelengine.chunk.Chunk)">
 <h3>shouldRenderChunk</h3>
 <div class="horizontal-scroll">
 <div class="member-signature"><span class="modifiers">public</span>&nbsp;<span class="return-type">boolean</span>&nbsp;<span class="element-name">shouldRenderChunk</span><wbr><span class="parameters">(<a href="world/Chunk.html" title="Klasse in net.fynn.javavoxelengine.world">Chunk</a>&nbsp;chunk)</span></div>
@@ -250,7 +250,7 @@ loadScripts(document, 'script');</script>
 </section>
 </li>
 <li>
-<section class="detail" id="isChunkVisible(net.fynn.javavoxelengine.world.Chunk)">
+<section class="detail" id="isChunkVisible(net.fynn.javavoxelengine.chunk.Chunk)">
 <h3>isChunkVisible</h3>
 <div class="horizontal-scroll">
 <div class="member-signature"><span class="modifiers">public</span>&nbsp;<span class="return-type">boolean</span>&nbsp;<span class="element-name">isChunkVisible</span><wbr><span class="parameters">(<a href="world/Chunk.html" title="Klasse in net.fynn.javavoxelengine.world">Chunk</a>&nbsp;chunk)</span></div>
@@ -265,7 +265,7 @@ loadScripts(document, 'script');</script>
 </section>
 </li>
 <li>
-<section class="detail" id="generateVoxelInstances(net.fynn.javavoxelengine.world.Chunk,com.badlogic.gdx.utils.Array)">
+<section class="detail" id="generateVoxelInstances(net.fynn.javavoxelengine.chunk.Chunk,com.badlogic.gdx.utils.Array)">
 <h3>generateVoxelInstances</h3>
 <div class="horizontal-scroll">
 <div class="member-signature"><span class="modifiers">public</span>&nbsp;<span class="return-type">void</span>&nbsp;<span class="element-name">generateVoxelInstances</span><wbr><span class="parameters">(<a href="world/Chunk.html" title="Klasse in net.fynn.javavoxelengine.world">Chunk</a>&nbsp;chunk,
@@ -280,7 +280,7 @@ loadScripts(document, 'script');</script>
 </section>
 </li>
 <li>
-<section class="detail" id="isBlockExposedToAir(net.fynn.javavoxelengine.world.Chunk,int,int,int)">
+<section class="detail" id="isBlockExposedToAir(net.fynn.javavoxelengine.chunk.Chunk,int,int,int)">
 <h3>isBlockExposedToAir</h3>
 <div class="horizontal-scroll">
 <div class="member-signature"><span class="modifiers">public</span>&nbsp;<span class="return-type">boolean</span>&nbsp;<span class="element-name">isBlockExposedToAir</span><wbr><span class="parameters">(<a href="world/Chunk.html" title="Klasse in net.fynn.javavoxelengine.world">Chunk</a>&nbsp;chunk,

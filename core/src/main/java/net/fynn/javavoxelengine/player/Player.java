@@ -3,8 +3,8 @@ package net.fynn.javavoxelengine.player;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.PerspectiveCamera;
 import com.badlogic.gdx.graphics.g3d.utils.FirstPersonCameraController;
-import net.fynn.javavoxelengine.world.Chunk;
-import net.fynn.javavoxelengine.world.ChunkGrid;
+import net.fynn.javavoxelengine.chunk.Chunk;
+import net.fynn.javavoxelengine.chunk.ChunkGrid;
 
 public class Player {
     private final PerspectiveCamera camera;
