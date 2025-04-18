@@ -50,6 +50,27 @@ public class ChunkGrid {
         }
     }
 
+    /** Returns the chunk at grid‐indices x,z, or null if out of bounds. */
+    public Chunk getChunk(int gridX, int gridZ) {
+        if (gridX < 0 || gridX >= gridWidth || gridZ < 0 || gridZ >= gridDepth) return null;
+        return chunks.get(gridX * gridDepth + gridZ);
+    }
+
+    /**
+     * Converts worldX/worldZ into grid indices, accounting
+     * for the fact that chunk (0,0) is at -halfWorldWidth.
+     */
+    public Chunk getChunkAtWorld(float worldX, float worldZ) {
+        float totalW = gridWidth  * Chunk.WIDTH;
+        float totalD = gridDepth  * Chunk.DEPTH;
+        float halfW  = totalW  * 0.5f;
+        float halfD  = totalD  * 0.5f;
+
+        int gx = (int)Math.floor((worldX + halfW) / Chunk.WIDTH);
+        int gz = (int)Math.floor((worldZ + halfD) / Chunk.DEPTH);
+        return getChunk(gx, gz);
+    }
+
     /**
      * Gibt die Liste der Chunks zurück.
      *

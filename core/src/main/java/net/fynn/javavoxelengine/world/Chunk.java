@@ -156,7 +156,7 @@ public class Chunk {
 
 
     // Hilfsmethode zur Ermittlung der obersten festen Blockhöhe
-    private int getSurfaceHeight(int x, int z) {
+    public int getSurfaceHeight(int x, int z) {
         for (int y = HEIGHT - 1; y >= 0; y--) {
             VoxelType t = getBlock(x, y, z);
             if (t != VoxelType.AIR) return y;

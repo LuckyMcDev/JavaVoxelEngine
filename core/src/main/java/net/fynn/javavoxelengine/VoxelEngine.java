@@ -2,19 +2,16 @@ package net.fynn.javavoxelengine;
 
 import com.badlogic.gdx.ApplicationAdapter;
 import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.InputProcessor;
 import com.badlogic.gdx.graphics.GL20;
-import com.badlogic.gdx.graphics.PerspectiveCamera;
 import com.badlogic.gdx.graphics.g3d.*;
 import com.badlogic.gdx.graphics.g3d.attributes.ColorAttribute;
 import com.badlogic.gdx.graphics.g3d.environment.*;
-import com.badlogic.gdx.graphics.g3d.utils.CameraInputController;
-import com.badlogic.gdx.graphics.g3d.utils.FirstPersonCameraController;
 import com.badlogic.gdx.math.Frustum;
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.math.collision.BoundingBox;
 
 import net.fynn.javavoxelengine.imgui.ThisImGui;
+import net.fynn.javavoxelengine.player.Player;
 import net.fynn.javavoxelengine.world.Chunk;
 import net.fynn.javavoxelengine.world.ChunkGrid;
 import net.fynn.javavoxelengine.world.VoxelModelCache;
@@ -33,11 +30,9 @@ public class VoxelEngine extends ApplicationAdapter {
 
     private ModelBatch modelBatch;
     private Environment environment;
-    private PerspectiveCamera camera;
-    private CameraInputController camController;
     private ChunkGrid chunkGrid;
     private Frustum frustum;
-    private FirstPersonCameraController fpController;
+    private Player player;
 
     private static final float CHUNK_RENDER_DISTANCE = 150f;
     private static final float CHUNK_RENDER_DISTANCE_SQUARED = CHUNK_RENDER_DISTANCE * CHUNK_RENDER_DISTANCE;
@@ -52,26 +47,12 @@ public class VoxelEngine extends ApplicationAdapter {
         environment.set(new ColorAttribute(ColorAttribute.AmbientLight, 0.8f, 0.8f, 0.8f, 1f));
         environment.add(new DirectionalLight().set(1f, 1f, 1f, -1f, -0.8f, -0.2f));
 
-        camera = new PerspectiveCamera(67, Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
-        camera.position.set(0f, 50f, 0f);
-        camera.near = 0.1f;
-        camera.far = 500f;
-        camera.update();
-
-        fpController = new FirstPersonCameraController(camera);
-        fpController.setVelocity(20f);          // units per second
-        fpController.setDegreesPerPixel(0.3f);   // mouse sensitivity
-        Gdx.input.setInputProcessor(fpController);
-
-        frustum = camera.frustum;
-
-
-
-
-
         VoxelModelCache.initialize(1f, 1f, 1f);
 
         chunkGrid = new ChunkGrid(10, 10, 1237161111); // Keine Chunk-Größe mehr nötig
+
+        player = new Player(chunkGrid);
+        frustum = player.getCamera().frustum;
 
         thisImGui = new ThisImGui();
     }
@@ -84,9 +65,8 @@ public class VoxelEngine extends ApplicationAdapter {
         Gdx.gl.glViewport(0, 0, Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
         Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT | GL20.GL_DEPTH_BUFFER_BIT);
 
-        fpController.update(Gdx.graphics.getDeltaTime());
-        camera.update();
-        modelBatch.begin(camera);
+        player.update(Gdx.graphics.getDeltaTime());
+        modelBatch.begin(player.getCamera());
 
         int renderedModelCount = 0;       // Zähler zurücksetzen
 
@@ -106,7 +86,7 @@ public class VoxelEngine extends ApplicationAdapter {
         modelBatch.end();
 
         // Zähler an ImGui übergeben
-        thisImGui.render(camera, renderedModelCount);
+        thisImGui.render(player.getCamera(), renderedModelCount);
     }
 
     /**
@@ -116,8 +96,8 @@ public class VoxelEngine extends ApplicationAdapter {
      * @return True, wenn der Chunk gerendert werden soll, sonst false.
      */
     public boolean shouldRenderChunk(Chunk chunk) {
-        float dx = camera.position.x - (chunk.originX + Chunk.WIDTH / 2f);
-        float dz = camera.position.z - (chunk.originZ + Chunk.DEPTH / 2f);
+        float dx = player.getCamera().position.x - (chunk.originX + Chunk.WIDTH / 2f);
+        float dz = player.getCamera().position.z - (chunk.originZ + Chunk.DEPTH / 2f);
         float distanceSquared = dx * dx + dz * dz;
 
         if (distanceSquared > CHUNK_RENDER_DISTANCE_SQUARED) return false;
