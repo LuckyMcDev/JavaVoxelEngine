@@ -152,6 +152,27 @@ public class Chunk {
                 }
             }
         }
+
+        for (int dx = -LEAF_RADIUS; dx <= LEAF_RADIUS; dx++) {
+            for (int dz = -LEAF_RADIUS; dz <= LEAF_RADIUS; dz++) {
+                if (Math.abs(dx) + Math.abs(dz) <= LEAF_RADIUS) {
+                    int lx = tx + dx;
+                    int lz = tz + dz;
+                    for (int dy = TRUNK_HEIGHT; dy <= TRUNK_HEIGHT + 1; dy++) {
+                        int ly = ty + dy;
+                        if (inBounds(lx, ly, lz) && getBlock(lx, ly, lz) != VoxelType.AIR) {
+                            // 20% chance per leaf block
+                            if (rand.nextDouble() < 0.2) {
+                                // place apple one block below this leaf
+                                if (inBounds(lx, ly - 1, lz) && getBlock(lx, ly - 1, lz) == VoxelType.AIR) {
+                                    setBlock(lx, ly - 1, lz, VoxelType.APPLE);
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        }
     }
 
 

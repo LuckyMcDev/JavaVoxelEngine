@@ -26,7 +26,10 @@ public enum VoxelType {
     LEAVES_LIGHT(new Color(0.514f,0.851f,0.447f,1f)),
 
     /** Blätter, Dunkelgrün. */
-    LEAVES_DARK(new Color(0.298f,0.602f,0.259f,1f));
+    LEAVES_DARK(new Color(0.298f,0.602f,0.259f,1f)),
+
+    /** Äpfel, Rot */
+    APPLE(new Color(0.92f,0.15f,0.125f,1f));
 
     /** Die Farbe des Voxeltyps. */
     public final Color color;
