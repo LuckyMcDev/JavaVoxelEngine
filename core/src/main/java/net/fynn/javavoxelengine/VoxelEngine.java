@@ -2,12 +2,14 @@ package net.fynn.javavoxelengine;
 
 import com.badlogic.gdx.ApplicationAdapter;
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.InputProcessor;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.PerspectiveCamera;
 import com.badlogic.gdx.graphics.g3d.*;
 import com.badlogic.gdx.graphics.g3d.attributes.ColorAttribute;
 import com.badlogic.gdx.graphics.g3d.environment.*;
 import com.badlogic.gdx.graphics.g3d.utils.CameraInputController;
+import com.badlogic.gdx.graphics.g3d.utils.FirstPersonCameraController;
 import com.badlogic.gdx.math.Frustum;
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.math.collision.BoundingBox;
@@ -35,8 +37,9 @@ public class VoxelEngine extends ApplicationAdapter {
     private CameraInputController camController;
     private ChunkGrid chunkGrid;
     private Frustum frustum;
+    private FirstPersonCameraController fpController;
 
-    private static final float CHUNK_RENDER_DISTANCE = 200f;
+    private static final float CHUNK_RENDER_DISTANCE = 150f;
     private static final float CHUNK_RENDER_DISTANCE_SQUARED = CHUNK_RENDER_DISTANCE * CHUNK_RENDER_DISTANCE;
 
     /**
@@ -50,16 +53,21 @@ public class VoxelEngine extends ApplicationAdapter {
         environment.add(new DirectionalLight().set(1f, 1f, 1f, -1f, -0.8f, -0.2f));
 
         camera = new PerspectiveCamera(67, Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
-        camera.position.set(50f, 50f, 50f);
-        camera.lookAt(0f, 0f, 0f);
+        camera.position.set(0f, 50f, 0f);
         camera.near = 0.1f;
         camera.far = 500f;
         camera.update();
 
-        camController = new CameraInputController(camera);
-        Gdx.input.setInputProcessor(camController);
+        fpController = new FirstPersonCameraController(camera);
+        fpController.setVelocity(20f);          // units per second
+        fpController.setDegreesPerPixel(0.3f);   // mouse sensitivity
+        Gdx.input.setInputProcessor(fpController);
 
         frustum = camera.frustum;
+
+
+
+
 
         VoxelModelCache.initialize(1f, 1f, 1f);
 
@@ -73,10 +81,11 @@ public class VoxelEngine extends ApplicationAdapter {
      */
     @Override
     public void render() {
-        camController.update();
         Gdx.gl.glViewport(0, 0, Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
         Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT | GL20.GL_DEPTH_BUFFER_BIT);
 
+        fpController.update(Gdx.graphics.getDeltaTime());
+        camera.update();
         modelBatch.begin(camera);
 
         int renderedModelCount = 0;       // Zähler zurücksetzen
