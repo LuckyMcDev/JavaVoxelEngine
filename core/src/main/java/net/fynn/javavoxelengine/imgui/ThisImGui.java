@@ -55,7 +55,7 @@ public class ThisImGui {
         renderDemoWindow();
         renderOptionsWindow();
         renderDebugWindow(camera, renderedModelCount);
-        renderChallengeWindow(); // New challenge window
+        renderChallengeWindow(challengeManager); // New challenge window
         renderDifficultyWindow(challengeManager); // New difficulty selection window
 
         ImGui.render();
@@ -114,7 +114,7 @@ public class ThisImGui {
     }
 
     // New method to render the challenge window
-    private void renderChallengeWindow() {
+    private void renderChallengeWindow(ChallengeManager challengeManager) {
         if (!showChallengeWindow.get()) return;
 
         ImGui.setNextWindowSize(200, 300);
@@ -125,6 +125,14 @@ public class ThisImGui {
         if (ImGui.button("Start New Challenge")) {
             // When the button is clicked, show the difficulty window
             showDifficultyWindow.set(true); // Show the difficulty window
+        }
+
+        // Show information about the currently active challenge
+        if (challengeManager.isActive()) {
+            ImGui.separator();
+            ImGui.text("Active Challenge: " + challengeManager.getModeName());
+            ImGui.text("Collected Apples: " + challengeManager.getCollected() + "/" + challengeManager.getTarget());
+            ImGui.text("Time Remaining: " + String.format("%.2f", challengeManager.getTimeRemainingSecs()) + " seconds");
         }
 
         ImGui.end();
@@ -142,7 +150,8 @@ public class ThisImGui {
         if (ImGui.button("Easy")) {
             System.out.println("Easy challenge selected!");
             challengeManager.start(ChallengeType.EASY);
-            showDifficultyWindow.set(false); // Close the difficulty window
+            // Delay hiding the window to the next frame
+            Gdx.app.postRunnable(() -> showDifficultyWindow.set(false));
         }
 
         ImGui.sameLine();
@@ -150,7 +159,8 @@ public class ThisImGui {
         if (ImGui.button("Medium")) {
             System.out.println("Medium challenge selected!");
             challengeManager.start(ChallengeType.MEDIUM);
-            showDifficultyWindow.set(false); // Close the difficulty window
+            // Delay hiding the window to the next frame
+            Gdx.app.postRunnable(() -> showDifficultyWindow.set(false));
         }
 
         ImGui.sameLine();
@@ -158,11 +168,13 @@ public class ThisImGui {
         if (ImGui.button("Hard")) {
             System.out.println("Hard challenge selected!");
             challengeManager.start(ChallengeType.HARD);
-            showDifficultyWindow.set(false); // Close the difficulty window
+            // Delay hiding the window to the next frame
+            Gdx.app.postRunnable(() -> showDifficultyWindow.set(false));
         }
 
         ImGui.end();
     }
+
 
     public void dispose() {
         imGuiGl3.dispose();

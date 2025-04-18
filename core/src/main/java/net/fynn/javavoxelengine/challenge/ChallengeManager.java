@@ -21,20 +21,18 @@ public class ChallengeManager {
         if (activeType == null) return;
         long elapsed = TimeUtils.timeSinceMillis(startTime);
         System.out.println(elapsed);
-        //handle game over:
         if (elapsed >= activeType.getTimeLimitMs()) {
-
             System.out.println("GAME OVER");
             end();
         }
     }
 
     /** Should be called when an apple is successfully clicked. */
-    public void collectApple() {
+    public void addOneAppleAndCheckComplete() {
         if (activeType == null) return;
         collected++;
         if (collected >= activeType.getTargetApples()) {
-            // challenge complete — handle win
+            System.out.println("YOU WIN!");
             end();
         }
     }

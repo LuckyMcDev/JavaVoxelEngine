@@ -2,7 +2,6 @@ package net.fynn.javavoxelengine.challenge;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.PerspectiveCamera;
-import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.math.collision.Ray;
 import net.fynn.javavoxelengine.world.Chunk;
 import net.fynn.javavoxelengine.world.VoxelType;
@@ -33,6 +32,7 @@ public class AppleCollector {
                 if(challengeManager.isActive()) {
                     System.out.println("You hit an apple!");
                     chunk.setBlock(localX,localY,localZ,VoxelType.AIR);
+                    challengeManager.addOneAppleAndCheckComplete();
                 };
                 break;
             }

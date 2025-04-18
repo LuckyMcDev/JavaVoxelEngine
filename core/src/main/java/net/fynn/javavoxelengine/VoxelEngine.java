@@ -116,7 +116,7 @@ public class VoxelEngine extends ApplicationAdapter {
 
 
         // Model count an ImGui übergeben
-        thisImGui.render(player.getCamera(), renderedModelCount);
+        thisImGui.render(player.getCamera(), renderedModelCount, challengeManager);
     }
 
     /**
