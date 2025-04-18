@@ -33,7 +33,7 @@ public class Player {
 
         controller = new FirstPersonCameraController(camera);
         controller.setVelocity(10f);
-        controller.setDegreesPerPixel(0.3f);
+        controller.setDegreesPerPixel(0.1f);
         Gdx.input.setInputProcessor(controller);
     }
 
