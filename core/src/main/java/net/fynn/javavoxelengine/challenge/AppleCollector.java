@@ -9,27 +9,33 @@ import net.fynn.javavoxelengine.world.VoxelType;
 
 public class AppleCollector {
     /** Call this when the player clicks to try and collect an apple. */
-    public boolean tryCollectApple(PerspectiveCamera camera, Chunk chunk) {
-        if(!Gdx.input.justTouched()) return false;
+    public void tryCollectApple(PerspectiveCamera camera, Chunk chunk, ChallengeManager challengeManager) {
         Ray ray = camera.getPickRay(Gdx.graphics.getWidth() / 2f, Gdx.graphics.getHeight() / 2f);
 
-        Vector3 pos = new Vector3(ray.origin);
-        Vector3 step = new Vector3(ray.direction).nor().scl(0.1f);
+        for (int distance = 0; distance < 10; distance++) {
+            float checkX = ray.origin.x + ray.direction.x * distance;
+            float checkY = ray.origin.y + ray.direction.y * distance;
+            float checkZ = ray.origin.z + ray.direction.z * distance;
 
-        for (int i = 0; i < 500; i++) {
-            pos.add(step);
+            int localX = Math.round(checkX - chunk.originX);
+            int localY = Math.round(checkY - chunk.originY);
+            int localZ = Math.round(checkZ - chunk.originZ);
 
-            int x = (int)Math.floor(pos.x);
-            int y = (int)Math.floor(pos.y);
-            int z = (int)Math.floor(pos.z);
+            if (localX < 0 || localX >= Chunk.WIDTH
+                || localY < 0 || localY >= Chunk.HEIGHT
+                || localZ < 0 || localZ >= Chunk.DEPTH) {
+                continue; // out of bounds → skip
+            }
 
-            VoxelType voxel = chunk.getBlock(x,y,z);
+            VoxelType block = chunk.getBlock(localX, localY, localZ);
 
-            if (voxel == VoxelType.APPLE) {
-                chunk.setBlock(x, y, z, VoxelType.AIR); // remove the apple
-                return true; // collected successfully
+            if (block == VoxelType.APPLE) {
+                if(challengeManager.isActive()) {
+                    System.out.println("You hit an apple!");
+                    chunk.setBlock(localX,localY,localZ,VoxelType.AIR);
+                };
+                break;
             }
         }
-        return false;
     }
 }

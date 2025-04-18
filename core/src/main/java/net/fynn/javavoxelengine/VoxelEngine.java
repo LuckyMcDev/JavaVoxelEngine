@@ -23,25 +23,31 @@ import net.fynn.javavoxelengine.world.ChunkGrid;
 import net.fynn.javavoxelengine.world.VoxelModelCache;
 import net.fynn.javavoxelengine.world.VoxelType;
 
+import java.security.Key;
+
 /**
  * Hauptklasse der Voxel-Engine.
  * Diese Klasse initialisiert und verwaltet die Voxel-Welt und die Benutzeroberfläche.
  *
  * @author Fynn
- * @version 1.0
+ * @version 1.1
  */
 public class VoxelEngine extends ApplicationAdapter {
-
-    private ThisImGui thisImGui;
-
+    // Rendering
     private ModelBatch modelBatch;
     private Environment environment;
-    private ChunkGrid chunkGrid;
     private Frustum frustum;
+    private ThisImGui thisImGui;
+    private Crosshair crosshair;
+
+    // World
+    private ChunkGrid chunkGrid;
     private Player player;
+
+    // Challenges
     private ChallengeManager challengeManager;
     private AppleCollector appleCollector;
-    private Crosshair crosshair;
+
 
     private static final float CHUNK_RENDER_DISTANCE = 150f;
     private static final float CHUNK_RENDER_DISTANCE_SQUARED = CHUNK_RENDER_DISTANCE * CHUNK_RENDER_DISTANCE;
@@ -64,8 +70,6 @@ public class VoxelEngine extends ApplicationAdapter {
         frustum = player.getCamera().frustum;
 
         challengeManager = new ChallengeManager();
-
-        challengeManager.start(ChallengeType.EASY);
 
         appleCollector = new AppleCollector();
 
@@ -105,7 +109,11 @@ public class VoxelEngine extends ApplicationAdapter {
 
         crosshair.render();
 
-        appleCollector.tryCollectApple(player.getCamera(),)
+        Chunk playerChunk = chunkGrid.getChunkAtWorld(player.getCamera().position.x, player.getCamera().position.z);
+        if(Gdx.input.isKeyJustPressed(Input.Keys.E)) {
+            appleCollector.tryCollectApple(player.getCamera(),playerChunk,challengeManager);
+        }
+
 
         // Model count an ImGui übergeben
         thisImGui.render(player.getCamera(), renderedModelCount);
@@ -122,8 +130,7 @@ public class VoxelEngine extends ApplicationAdapter {
         float dz = player.getCamera().position.z - (chunk.originZ + Chunk.DEPTH / 2f);
         float distanceSquared = dx * dx + dz * dz;
 
-        if (distanceSquared > CHUNK_RENDER_DISTANCE_SQUARED) return false;
-        return isChunkVisible(chunk);
+        return distanceSquared <= CHUNK_RENDER_DISTANCE_SQUARED && isChunkVisible(chunk);
     }
 
     /**
@@ -157,14 +164,14 @@ public class VoxelEngine extends ApplicationAdapter {
 
                     VoxelType type = chunk.getBlock(x, y, z);
 
-                    // 1) Wachsen entlang der X-Achse
+                    // 1) Wachsen entlang der x-Achse
                     int dx = 1;
                     while (x + dx < W && isEligible.test(x + dx, y, z)
                         && chunk.getBlock(x + dx, y, z) == type) {
                         dx++;
                     }
 
-                    // 2) Wachsen entlang der Y-Achse
+                    // 2) Wachsen entlang der y-Achse
                     int dy = 1;
                     outerY:
                     while (y + dy < H) {
@@ -177,7 +184,7 @@ public class VoxelEngine extends ApplicationAdapter {
                         dy++;
                     }
 
-                    // 3) Wachsen entlang der Z-Achse
+                    // 3) Wachsen entlang der z-Achse
                     int dz = 1;
                     outerZ:
                     while (z + dz < D) {
@@ -240,7 +247,7 @@ public class VoxelEngine extends ApplicationAdapter {
         if (chunk.getBlock(x, y, z) == VoxelType.AIR) return false;
 
         // Korrekte Nachbarprüfungen (6 Richtungen)
-        if (y < Chunk.HEIGHT - 1 && chunk.getBlock(x, y + 10, z) == VoxelType.AIR) return true; // Oben
+        if (y < Chunk.HEIGHT - 1 && chunk.getBlock(x, y + 1, z) == VoxelType.AIR) return true; // Oben
         if (y > 0 && chunk.getBlock(x, y - 1, z) == VoxelType.AIR) return true; // Unten
         if (x < Chunk.WIDTH - 1 && chunk.getBlock(x + 1, y, z) == VoxelType.AIR) return true; // Rechts
         if (x > 0 && chunk.getBlock(x - 1, y, z) == VoxelType.AIR) return true; // Links
