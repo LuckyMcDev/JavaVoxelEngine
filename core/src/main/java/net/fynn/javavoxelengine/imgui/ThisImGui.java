@@ -12,36 +12,28 @@ import imgui.gl3.ImGuiImplGl3;
 import imgui.glfw.ImGuiImplGlfw;
 import imgui.type.ImBoolean;
 import imgui.type.ImInt;
+import net.fynn.javavoxelengine.challenge.ChallengeManager;
+import net.fynn.javavoxelengine.challenge.ChallengeType;
 import org.lwjgl.glfw.GLFW;
 import org.lwjgl.opengl.GL;
 import com.badlogic.gdx.graphics.Camera;
 
-/**
- * Wrappt die Dear ImGui-Integration mit ein- und ausschaltbaren Fenstern und Debug/Info-Panels.
- */
 public class ThisImGui {
 
     private final ImGuiImplGlfw imGuiGlfw = new ImGuiImplGlfw();
     private final ImGuiImplGl3 imGuiGl3 = new ImGuiImplGl3();
 
-    // Sichtbarkeitsflags für Fenster
+    // Visibility flags for windows
     private final ImBoolean showDemoWindow = new ImBoolean(false);
     private final ImBoolean showOptionsWindow = new ImBoolean(false);
     private final ImBoolean showDebugWindow = new ImBoolean(true);
+    private final ImBoolean showChallengeWindow = new ImBoolean(true); // New challenge window flag
+    private final ImBoolean showDifficultyWindow = new ImBoolean(false); // New flag for difficulty window
 
-    // Anwendungsoptionen
-    private final ImInt renderDistance = new ImInt(8); // in Chunks
-
-    /**
-     * Erstellt eine neue Instanz von ThisImGui und initialisiert die ImGui-Komponenten.
-     */
     public ThisImGui() {
         create();
     }
 
-    /**
-     * Initialisiert die ImGui-Komponenten.
-     */
     private void create() {
         long windowHandle = ((Lwjgl3Graphics) Gdx.graphics).getWindow().getWindowHandle();
         GLFW.glfwMakeContextCurrent(windowHandle);
@@ -55,13 +47,7 @@ public class ThisImGui {
         imGuiGl3.init("#version 110");
     }
 
-    /**
-     * Rendert alle ImGui-Elemente. Sollte in jedem Frame aufgerufen werden.
-     *
-     * @param camera             Die aktuelle Spielkamera (zur Positionierung von Infos).
-     * @param renderedModelCount Anzahl der in diesem Frame gerenderten Modellinstanzen.
-     */
-    public void render(Camera camera, int renderedModelCount) {
+    public void render(Camera camera, int renderedModelCount, ChallengeManager challengeManager) {
         imGuiGlfw.newFrame();
         ImGui.newFrame();
 
@@ -69,27 +55,26 @@ public class ThisImGui {
         renderDemoWindow();
         renderOptionsWindow();
         renderDebugWindow(camera, renderedModelCount);
+        renderChallengeWindow(); // New challenge window
+        renderDifficultyWindow(challengeManager); // New difficulty selection window
 
         ImGui.render();
         imGuiGl3.renderDrawData(ImGui.getDrawData());
     }
 
-    /**
-     * Rendert die Haupt-Tab-Leiste mit Steuerelementen.
-     */
     private void renderMainTabBar() {
-        ImGui.setNextWindowSize(200,300);
-        ImGui.setNextWindowPos(0,0);
+        ImGui.setNextWindowSize(200, 300);
+        ImGui.setNextWindowPos(0, 0);
         ImGui.begin("UI Controls", ImGuiWindowFlags.NoCollapse);
         if (ImGui.beginTabBar("##MainTabBar", ImGuiTabBarFlags.None)) {
             if (ImGui.beginTabItem("Windows")) {
                 ImGui.checkbox("Demo Window", showDemoWindow);
                 ImGui.checkbox("Options", showOptionsWindow);
                 ImGui.checkbox("Debug Info", showDebugWindow);
+                ImGui.checkbox("Challenges", showChallengeWindow); // Checkbox to toggle challenge window
                 ImGui.endTabItem();
             }
             if (ImGui.beginTabItem("Options")) {
-                //ImGui.sliderInt("Render Distance (chunks)", renderDistance, 1, 32);
                 ImGui.text("TODO: RENDER DISTANCE");
                 ImGui.endTabItem();
             }
@@ -98,61 +83,87 @@ public class ThisImGui {
         ImGui.end();
     }
 
-    /**
-     * Rendert das Demo-Fenster, wenn es sichtbar ist.
-     */
     private void renderDemoWindow() {
         if (showDemoWindow.get()) {
             ImGui.showDemoWindow(showDemoWindow);
         }
     }
 
-    /**
-     * Rendert das Optionsfenster, wenn es sichtbar ist.
-     */
     private void renderOptionsWindow() {
         if (!showOptionsWindow.get()) return;
         ImGui.begin("Options", showOptionsWindow, ImGuiWindowFlags.None);
-        ImGui.text("Grafikoptionen");
-        //ImGui.sliderInt("Render Distance", renderDistance, 1, 32);
+        ImGui.text("Graphics Options");
         ImGui.text("TODO: RENDER DISTANCE");
-        // TODO: Anwenden von `renderDistance.get()` auf Ihren Chunk-Renderer
         ImGui.end();
     }
 
-    /**
-     * Rendert das Debug-Fenster, wenn es sichtbar ist.
-     *
-     * @param camera             Die aktuelle Spielkamera.
-     * @param renderedModelCount Anzahl der gerenderten Modellinstanzen.
-     */
     private void renderDebugWindow(Camera camera, int renderedModelCount) {
         if (!showDebugWindow.get()) return;
-        // Unten fixieren
         ImGui.setNextWindowPos(0, Gdx.graphics.getHeight() - 100, ImGuiCond.Always);
         ImGui.setNextWindowSize(Gdx.graphics.getWidth(), 100, ImGuiCond.Always);
         ImGui.begin("Debug Info", showDebugWindow,
             ImGuiWindowFlags.NoCollapse | ImGuiWindowFlags.NoTitleBar);
 
-        ImGui.text("FPS: "+Gdx.graphics.getFramesPerSecond());
+        ImGui.text("FPS: " + Gdx.graphics.getFramesPerSecond());
         ImGui.text("Rendered Model Instances: " + renderedModelCount);
         ImGui.text(String.format(
             "Camera Position: X=%.2f, Y=%.2f, Z=%.2f",
             camera.position.x, camera.position.y, camera.position.z));
 
-        ImGui.text("Cam dir: "+camera.direction);
-        ImGui.text("gdx getX: "+Gdx.input.getX());
-        ImGui.sameLine();
-        ImGui.text("gdx getY: "+Gdx.input.getY());
-        ImGui.sameLine();
-        ImGui.text("gdx touched: "+Gdx.input.isTouched());
-        camera.project(new Vector3(0,0,0));
         ImGui.end();
     }
 
-    /**
-     * Gibt die von ImGui verwendeten Ressourcen frei.
-     */
+    // New method to render the challenge window
+    private void renderChallengeWindow() {
+        if (!showChallengeWindow.get()) return;
+
+        ImGui.setNextWindowSize(200, 300);
+        ImGui.setNextWindowPos(0, 300);
+
+        ImGui.begin("Challenge Window", showChallengeWindow, ImGuiWindowFlags.None);
+
+        if (ImGui.button("Start New Challenge")) {
+            // When the button is clicked, show the difficulty window
+            showDifficultyWindow.set(true); // Show the difficulty window
+        }
+
+        ImGui.end();
+    }
+
+    // New method to render the difficulty window
+    private void renderDifficultyWindow(ChallengeManager challengeManager) {
+        if (!showDifficultyWindow.get()) return;
+
+        ImGui.setNextWindowSize(200, 200);
+        ImGui.setNextWindowPos(0, 600);
+
+        ImGui.begin("Select Difficulty", showDifficultyWindow, ImGuiWindowFlags.None);
+
+        if (ImGui.button("Easy")) {
+            System.out.println("Easy challenge selected!");
+            challengeManager.start(ChallengeType.EASY);
+            showDifficultyWindow.set(false); // Close the difficulty window
+        }
+
+        ImGui.sameLine();
+
+        if (ImGui.button("Medium")) {
+            System.out.println("Medium challenge selected!");
+            challengeManager.start(ChallengeType.MEDIUM);
+            showDifficultyWindow.set(false); // Close the difficulty window
+        }
+
+        ImGui.sameLine();
+
+        if (ImGui.button("Hard")) {
+            System.out.println("Hard challenge selected!");
+            challengeManager.start(ChallengeType.HARD);
+            showDifficultyWindow.set(false); // Close the difficulty window
+        }
+
+        ImGui.end();
+    }
+
     public void dispose() {
         imGuiGl3.dispose();
         imGuiGlfw.dispose();
