@@ -1,9 +1,11 @@
 package net.fynn.javavoxelengine.chunk;
 
+import com.badlogic.gdx.math.Frustum;
 import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.math.collision.BoundingBox;
 
 import make.some.noise.Noise;
+import net.fynn.javavoxelengine.player.Player;
 import net.fynn.javavoxelengine.world.VoxelType;
 
 import java.util.Random;
@@ -27,6 +29,9 @@ public class Chunk {
 
     /**Der radius der Blätter*/
     private static final int LEAF_RADIUS  = 3;
+
+    private static final float CHUNK_RENDER_DISTANCE = 150f;
+    private static final float CHUNK_RENDER_DISTANCE_SQUARED = CHUNK_RENDER_DISTANCE * CHUNK_RENDER_DISTANCE;
 
     /** Die Voxeltypen, die diesen Chunk bilden. */
     private final VoxelType[][][] blocks;
@@ -217,5 +222,30 @@ public class Chunk {
      */
     public VoxelType getBlock(int x, int y, int z) {
         return blocks[x][y][z];
+    }
+
+    /**
+     * Bestimmt, ob ein Chunk basierend auf der Entfernung gerendert werden soll.
+     *
+     * @param chunk Der zu überprüfende Chunk.
+     * @return True, wenn der Chunk gerendert werden soll, sonst false.
+     */
+    public boolean shouldRenderChunk(Chunk chunk, Player player) {
+        float dx = player.getCamera().position.x - (chunk.originX + Chunk.WIDTH / 2f);
+        float dz = player.getCamera().position.z - (chunk.originZ + Chunk.DEPTH / 2f);
+        float distanceSquared = dx * dx + dz * dz;
+
+        return distanceSquared <= CHUNK_RENDER_DISTANCE_SQUARED && isChunkVisible(chunk, player.getCamera().frustum);
+    }
+
+    /**
+     * Überprüft, ob ein Chunk im Sichtfeld der Kamera liegt.
+     *
+     * @param chunk Der zu überprüfende Chunk.
+     * @return True, wenn der Chunk sichtbar ist, sonst false.
+     */
+    public boolean isChunkVisible(Chunk chunk, Frustum frustum) {
+        BoundingBox chunkBox = chunk.getBoundingBox();
+        return frustum.boundsInFrustum(chunkBox);
     }
 }
