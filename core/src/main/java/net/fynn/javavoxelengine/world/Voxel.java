@@ -23,8 +23,6 @@ public class Voxel {
         if (voxelType == null || !voxelType.isVisible()) return null;
 
         ModelBuilder builder = new ModelBuilder();
-        return builder.createBox(width, height, depth,
-            new Material(ColorAttribute.createDiffuse(voxelType.color)),
-            VertexAttributes.Usage.Position | VertexAttributes.Usage.Normal);
+        return builder.createBox(width, height, depth, new Material(ColorAttribute.createDiffuse(voxelType.color)), VertexAttributes.Usage.Position | VertexAttributes.Usage.Normal);
     }
 }
