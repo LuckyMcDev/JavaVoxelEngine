@@ -1,8 +1,10 @@
 package net.fynn.javavoxelengine.player;
 
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.Input;
 import com.badlogic.gdx.graphics.PerspectiveCamera;
 import com.badlogic.gdx.graphics.g3d.utils.FirstPersonCameraController;
+import com.badlogic.gdx.math.Vector3;
 import net.fynn.javavoxelengine.world.Chunk;
 import net.fynn.javavoxelengine.world.ChunkGrid;
 
@@ -15,6 +17,8 @@ public class Player {
     private float vy = 0f;                 // current vertical velocity
     private static final float GRAVITY = -30f;  // units/sec²
     private static final float EYE_HEIGHT = 2f; // camera offset above ground
+
+    private boolean isOnGround = false; // just to check if the player is on the ground atp
 
     public Player(ChunkGrid chunkGrid) {
         this.chunkGrid = chunkGrid;
@@ -37,15 +41,22 @@ public class Player {
         // 1) horizontal look & movement
         controller.update(delta);
 
-        // 2) apply gravity
+        // 2) jump input
+        if (Gdx.input.isKeyJustPressed(com.badlogic.gdx.Input.Keys.SPACE) && isOnGround) {
+            vy = 12f;  // Jump power
+            isOnGround = false;
+        }
+
+        // 3) apply gravity
         vy += GRAVITY * delta;
         camera.position.y += vy * delta;
 
-        // 3) ground‐collision: find terrain height under the camera
+        // 4) ground-collision
         float groundY = sampleGroundHeight(camera.position.x, camera.position.z) + EYE_HEIGHT;
         if (camera.position.y < groundY) {
             camera.position.y = groundY;
             vy = 0f;
+            isOnGround = true;
         }
 
         camera.update();
@@ -74,9 +85,9 @@ public class Player {
         localX = Math.max(0, Math.min(localX, Chunk.WIDTH  - 1));
         localZ = Math.max(0, Math.min(localZ, Chunk.DEPTH  - 1));
 
-        // use your existing surface‐scan
+        // use existing surface‐scan
         int topY = c.getSurfaceHeight(localX, localZ);
-        if (topY < 0) return c.originY;        // all air => base y
+        if (topY < 0) return c.originY;                 // all air => base y
         return c.originY + topY;
     }
 }
