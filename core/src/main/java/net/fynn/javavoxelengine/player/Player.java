@@ -1,10 +1,8 @@
 package net.fynn.javavoxelengine.player;
 
 import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.Input;
 import com.badlogic.gdx.graphics.PerspectiveCamera;
 import com.badlogic.gdx.graphics.g3d.utils.FirstPersonCameraController;
-import com.badlogic.gdx.math.Vector3;
 import net.fynn.javavoxelengine.world.Chunk;
 import net.fynn.javavoxelengine.world.ChunkGrid;
 
