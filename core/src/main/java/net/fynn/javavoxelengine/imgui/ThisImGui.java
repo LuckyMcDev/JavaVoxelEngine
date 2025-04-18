@@ -2,6 +2,7 @@ package net.fynn.javavoxelengine.imgui;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.backends.lwjgl3.Lwjgl3Graphics;
+import com.badlogic.gdx.math.Vector3;
 import imgui.ImGui;
 import imgui.ImGuiIO;
 import imgui.flag.ImGuiCond;
@@ -138,6 +139,14 @@ public class ThisImGui {
         ImGui.text(String.format(
             "Camera Position: X=%.2f, Y=%.2f, Z=%.2f",
             camera.position.x, camera.position.y, camera.position.z));
+
+        ImGui.text("Cam dir: "+camera.direction);
+        ImGui.text("gdx getX: "+Gdx.input.getX());
+        ImGui.sameLine();
+        ImGui.text("gdx getY: "+Gdx.input.getY());
+        ImGui.sameLine();
+        ImGui.text("gdx touched: "+Gdx.input.isTouched());
+        camera.project(new Vector3(0,0,0));
         ImGui.end();
     }
 
