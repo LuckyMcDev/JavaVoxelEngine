@@ -9,7 +9,14 @@ gradle-app.setting
 /code/build/libs/
 /core/build/tmp/
 /lwjgl2/build/
-/lwjgl3/build/
+/lwjgl3/build/classes/
+/lwjgl3/build/construo/
+/lwjgl3/build/distributions/
+/lwjgl3/build/generated/
+/lwjgl3/build/libs/
+/lwjgl3/build/resources/
+/lwjgl3/build/scripts/
+/lwjgl3/build/tmp/
 /html/build/
 /teavm/build/
 /ios/build/

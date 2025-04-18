@@ -1,0 +1,1 @@
+typeSearchIndex = [{"l":"Alle Klassen und Schnittstellen","u":"allclasses-index.html"},{"p":"net.fynn.javavoxelengine.lwjgl3","l":"Lwjgl3Launcher"},{"p":"net.fynn.javavoxelengine.lwjgl3","l":"StartupHelper"}];updateSearchResults();
