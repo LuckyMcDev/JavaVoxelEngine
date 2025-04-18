@@ -8,22 +8,18 @@ import com.badlogic.gdx.graphics.g3d.*;
 import com.badlogic.gdx.graphics.g3d.attributes.ColorAttribute;
 import com.badlogic.gdx.graphics.g3d.environment.*;
 import com.badlogic.gdx.math.Frustum;
-import com.badlogic.gdx.math.collision.Ray;
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.math.collision.BoundingBox;
 
 import net.fynn.javavoxelengine.challenge.AppleCollector;
 import net.fynn.javavoxelengine.challenge.ChallengeManager;
-import net.fynn.javavoxelengine.challenge.ChallengeType;
 import net.fynn.javavoxelengine.imgui.ThisImGui;
 import net.fynn.javavoxelengine.player.Crosshair;
 import net.fynn.javavoxelengine.player.Player;
-import net.fynn.javavoxelengine.world.Chunk;
-import net.fynn.javavoxelengine.world.ChunkGrid;
+import net.fynn.javavoxelengine.chunk.Chunk;
+import net.fynn.javavoxelengine.chunk.ChunkGrid;
 import net.fynn.javavoxelengine.world.VoxelModelCache;
 import net.fynn.javavoxelengine.world.VoxelType;
-
-import java.security.Key;
 
 /**
  * Hauptklasse der Voxel-Engine.
@@ -155,7 +151,7 @@ public class VoxelEngine extends ApplicationAdapter {
         boolean[][][] visited = new boolean[W][H][D];
 
         // Hilfsfunktion zur Überprüfung der Voxel-Eignung
-        Predicate3<Integer,Integer,Integer> isEligible = (x, y, z) -> !visited[x][y][z] && chunk.getBlock(x, y, z) != null && chunk.getBlock(x, y, z).isVisible();
+        Predicate3<Integer,Integer,Integer> isEligible = (x, y, z) -> !visited[x][y][z] && chunk.getBlock(x, y, z) != null && chunk.getBlock(x, y, z).isVisible() && isBlockExposedToAir(chunk,x,y,z);
 
         for (int x = 0; x < W; x++) {
             for (int y = 0; y < H; y++) {
