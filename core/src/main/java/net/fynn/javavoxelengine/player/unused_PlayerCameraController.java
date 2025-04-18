@@ -6,21 +6,35 @@ import com.badlogic.gdx.graphics.Camera;
 import com.badlogic.gdx.graphics.PerspectiveCamera;
 import com.badlogic.gdx.math.Vector3;
 
+/**
+ * Eine nicht verwendete Klasse zur Steuerung der Spieler-Kamera.
+ */
 public class unused_PlayerCameraController extends Camera {
     private final PerspectiveCamera camera;
     private final Vector3 tmp = new Vector3();
 
-    public float moveSpeed = 10f;
+    /** Die Empfindlichkeit der Maussteuerung. */
     public float mouseSensitivity = 0.2f;
 
-    private float yaw = -90f;   // Start pointing along -Z
-    private float pitch = 0f;
+    /** Die Bewegungsgeschwindigkeit des Spielers. */
+    public float moveSpeed = 10f;
 
+
+    /**
+     * Erstellt einen neuen PlayerCameraController mit der angegebenen Kamera.
+     *
+     * @param camera Die zu steuernde Kamera.
+     */
     public unused_PlayerCameraController(PerspectiveCamera camera) {
         this.camera = camera;
         Gdx.input.setCursorCatched(true); // Lock mouse to window
     }
 
+    /**
+     * Aktualisiert die Kamera basierend auf der verstrichenen Zeit.
+     *
+     * @param deltaTime Die seit dem letzten Aufruf verstrichene Zeit.
+     */
     public void update(float deltaTime) {
 
         // Movement
