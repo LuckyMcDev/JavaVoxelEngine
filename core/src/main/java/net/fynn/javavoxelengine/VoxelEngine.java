@@ -113,14 +113,12 @@ public class VoxelEngine extends Game {
 
         crosshair.render();
 
-        Chunk playerChunk = chunkGrid.getChunkAtWorld(player.getCamera().position.x, player.getCamera().position.z);
         if(Gdx.input.isKeyJustPressed(Input.Keys.E)) {
-            appleCollector.tryCollectApple(player.getCamera(),playerChunk,challengeManager);
+            appleCollector.tryCollectApple(player.getCamera(),chunkGrid,challengeManager);
         }
 
-
         // Model count an ImGui übergeben
-        thisImGui.render(player.getCamera(), renderedModelCount, challengeManager);
+        thisImGui.render(player.getCamera(), renderedModelCount, challengeManager, chunkGrid);
     }
 
     /**

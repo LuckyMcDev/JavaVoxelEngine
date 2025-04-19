@@ -31,7 +31,7 @@ public class Player {
 
         controller = new FirstPersonCameraController(camera);
         controller.setVelocity(10f);
-        controller.setDegreesPerPixel(0.1f);
+        controller.setDegreesPerPixel(0.07f);
         Gdx.input.setInputProcessor(controller);
     }
 
@@ -50,7 +50,7 @@ public class Player {
         camera.position.y += vy * delta;
 
         // 4) ground-collision
-        float groundY = sampleGroundHeight(camera.position.x, camera.position.z) + EYE_HEIGHT;
+        float groundY = sampleGroundHeight((int)camera.position.x, (int)camera.position.z) + EYE_HEIGHT;
         if (camera.position.y < groundY) {
             camera.position.y = groundY;
             vy = 0f;
@@ -67,7 +67,7 @@ public class Player {
     /**
      * Finds the highest non‐air block under (worldX, worldZ).
      */
-    private float sampleGroundHeight(float worldX, float worldZ) {
+    private float sampleGroundHeight(int worldX, int worldZ) {
         // Grab the chunk the player is above
         Chunk c = chunkGrid.getChunkAtWorld(worldX, worldZ);
         if (c == null) {

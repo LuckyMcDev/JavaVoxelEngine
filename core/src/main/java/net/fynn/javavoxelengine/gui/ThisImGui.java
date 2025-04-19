@@ -12,6 +12,8 @@ import imgui.glfw.ImGuiImplGlfw;
 import imgui.type.ImBoolean;
 import net.fynn.javavoxelengine.challenge.ChallengeManager;
 import net.fynn.javavoxelengine.challenge.ChallengeType;
+import net.fynn.javavoxelengine.chunk.Chunk;
+import net.fynn.javavoxelengine.chunk.ChunkGrid;
 import org.lwjgl.glfw.GLFW;
 import org.lwjgl.opengl.GL;
 import com.badlogic.gdx.graphics.Camera;
@@ -45,14 +47,14 @@ public class ThisImGui {
         imGuiGl3.init("#version 110");
     }
 
-    public void render(Camera camera, int renderedModelCount, ChallengeManager challengeManager) {
+    public void render(Camera camera, int renderedModelCount, ChallengeManager challengeManager, ChunkGrid chunkGrid) {
         imGuiGlfw.newFrame();
         ImGui.newFrame();
 
         renderMainTabBar();
         renderDemoWindow();
         renderOptionsWindow();
-        renderDebugWindow(camera, renderedModelCount);
+        renderDebugWindow(camera, renderedModelCount, chunkGrid);
         renderChallengeWindow(challengeManager); // New challenge window
         renderDifficultyWindow(challengeManager); // New difficulty selection window
 
@@ -95,7 +97,7 @@ public class ThisImGui {
         ImGui.end();
     }
 
-    private void renderDebugWindow(Camera camera, int renderedModelCount) {
+    private void renderDebugWindow(Camera camera, int renderedModelCount, ChunkGrid chunkGrid) {
         if (!showDebugWindow.get()) return;
         ImGui.setNextWindowPos(0, Gdx.graphics.getHeight() - 100, ImGuiCond.Always);
         ImGui.setNextWindowSize(Gdx.graphics.getWidth(), 100, ImGuiCond.Always);
@@ -108,6 +110,10 @@ public class ThisImGui {
             "Camera Position: X=%.2f, Y=%.2f, Z=%.2f",
             camera.position.x, camera.position.y, camera.position.z));
 
+
+        Chunk currChunk = chunkGrid.getChunkAtWorld((int) camera.position.x, (int) camera.position.z);
+        ImGui.text("Current Chunk: "+currChunk.originX+" "+currChunk.originZ);
+        ImGui.text("Chunk Local Coords "+chunkGrid.getChunkLocalCoords(camera.position));
         ImGui.end();
     }
 
@@ -166,6 +172,13 @@ public class ThisImGui {
         if (ImGui.button("Hard")) {
             System.out.println("Hard challenge selected!");
             challengeManager.start(ChallengeType.HARD);
+            // Delay hiding the window to the next frame
+            Gdx.app.postRunnable(() -> showDifficultyWindow.set(false));
+        }
+
+        if (ImGui.button("DEBUG")) {
+            System.out.println("DEBUG challenge selected!");
+            challengeManager.start(ChallengeType.DEBUG);
             // Delay hiding the window to the next frame
             Gdx.app.postRunnable(() -> showDifficultyWindow.set(false));
         }

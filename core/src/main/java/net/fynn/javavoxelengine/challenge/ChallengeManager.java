@@ -20,7 +20,6 @@ public class ChallengeManager {
     public void update() {
         if (activeType == null) return;
         long elapsed = TimeUtils.timeSinceMillis(startTime);
-        System.out.println(elapsed);
         if (elapsed >= activeType.getTimeLimitMs()) {
             System.out.println("GAME OVER");
             end();

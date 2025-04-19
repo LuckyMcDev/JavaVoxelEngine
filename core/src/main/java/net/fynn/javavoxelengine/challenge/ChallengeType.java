@@ -6,7 +6,8 @@ package net.fynn.javavoxelengine.challenge;
 public enum ChallengeType {
     EASY   ("Easy",   30, 60000),
     MEDIUM ("Medium", 60, 60000),
-    HARD   ("Hard",   80, 60000);
+    HARD   ("Hard",   80, 60000),
+    DEBUG  ("DEBUG", 999999999,999999999);
 
     private final String displayName;
     private final int    targetApples;
