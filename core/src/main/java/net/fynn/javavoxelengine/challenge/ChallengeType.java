@@ -4,9 +4,9 @@ package net.fynn.javavoxelengine.challenge;
  * Definitions for each challenge mode: name, apple target, and time limit.
  */
 public enum ChallengeType {
-    EASY   ("Easy",   30, 60000),
-    MEDIUM ("Medium", 60, 60000),
-    HARD   ("Hard",   80, 60000),
+    EASY   ("Easy",   10, 60000),
+    MEDIUM ("Medium", 20, 60000),
+    HARD   ("Hard",   30, 60000),
     DEBUG  ("DEBUG", 999999999,999999999);
 
     private final String displayName;

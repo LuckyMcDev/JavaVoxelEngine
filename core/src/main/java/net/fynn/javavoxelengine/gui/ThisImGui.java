@@ -27,8 +27,10 @@ public class ThisImGui {
     private final ImBoolean showDemoWindow = new ImBoolean(false);
     private final ImBoolean showOptionsWindow = new ImBoolean(false);
     private final ImBoolean showDebugWindow = new ImBoolean(true);
-    private final ImBoolean showChallengeWindow = new ImBoolean(true); // New challenge window flag
-    private final ImBoolean showDifficultyWindow = new ImBoolean(false); // New flag for difficulty window
+    private final ImBoolean showChallengeWindow = new ImBoolean(true);
+    private final ImBoolean showDifficultyWindow = new ImBoolean(false);
+    private final ImBoolean showWinWindow = new ImBoolean(false);
+    private final ImBoolean showLossWindow = new ImBoolean(false);
 
     public ThisImGui() {
         create();
@@ -56,6 +58,13 @@ public class ThisImGui {
         renderOptionsWindow();
         renderDebugWindow(camera, renderedModelCount, chunkGrid);
         renderChallengeWindow(challengeManager); // New challenge window
+        if (challengeManager.hasPlayerWon()) {
+            showWinWindow.set(true);
+        } else if (challengeManager.hasPlayerLost()) {
+            showLossWindow.set(true); // <-- we'll add this loss window next
+        }
+        renderWinWindow(challengeManager);
+        renderLossWindow(challengeManager);
         renderDifficultyWindow(challengeManager); // New difficulty selection window
 
         ImGui.render();
@@ -94,6 +103,34 @@ public class ThisImGui {
         ImGui.begin("Options", showOptionsWindow, ImGuiWindowFlags.None);
         ImGui.text("Graphics Options");
         ImGui.text("TODO: RENDER DISTANCE");
+        ImGui.end();
+    }
+
+    private void renderWinWindow(ChallengeManager challengeManager) {
+        if(!showWinWindow.get()) return;
+        ImGui.begin("YOU WIN!", showWinWindow, ImGuiWindowFlags.None);
+        ImGui.text("You won the " + challengeManager.getModeName() + " Challenge!");
+
+        if (ImGui.button("Play Again")) {
+            challengeManager.reset();
+            showWinWindow.set(false);
+            showDifficultyWindow.set(true); // Reopen difficulty selection
+        }
+
+        ImGui.end();
+    }
+
+    private void renderLossWindow(ChallengeManager challengeManager) {
+        if(!showLossWindow.get()) return;
+        ImGui.begin("GAME OVER", showLossWindow, ImGuiWindowFlags.None);
+        ImGui.text("You failed the " + challengeManager.getModeName() + " Challenge.");
+
+        if (ImGui.button("Play Again")) {
+            challengeManager.reset();
+            showLossWindow.set(false);
+            showDifficultyWindow.set(true); // Reopen difficulty selection
+        }
+
         ImGui.end();
     }
 
