@@ -4,8 +4,8 @@ import com.badlogic.gdx.graphics.g3d.Model;
 import com.badlogic.gdx.graphics.g3d.ModelInstance;
 import com.badlogic.gdx.utils.Array;
 import net.fynn.javavoxelengine.util.Predicate3;
-import net.fynn.javavoxelengine.world.VoxelModelCache;
-import net.fynn.javavoxelengine.world.VoxelType;
+import net.fynn.javavoxelengine.voxel.VoxelModelCache;
+import net.fynn.javavoxelengine.voxel.VoxelType;
 
 public class GenerateVoxelInstances {
 

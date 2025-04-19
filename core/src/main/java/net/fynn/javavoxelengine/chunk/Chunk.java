@@ -6,7 +6,7 @@ import com.badlogic.gdx.math.collision.BoundingBox;
 
 import make.some.noise.Noise;
 import net.fynn.javavoxelengine.player.Player;
-import net.fynn.javavoxelengine.world.VoxelType;
+import net.fynn.javavoxelengine.voxel.VoxelType;
 
 import java.util.Random;
 

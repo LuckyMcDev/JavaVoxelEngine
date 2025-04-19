@@ -1,4 +1,4 @@
-package net.fynn.javavoxelengine.world;
+package net.fynn.javavoxelengine.voxel;
 
 import com.badlogic.gdx.graphics.VertexAttributes;
 import com.badlogic.gdx.graphics.g3d.Material;

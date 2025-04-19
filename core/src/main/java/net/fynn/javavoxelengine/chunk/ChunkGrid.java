@@ -2,7 +2,7 @@ package net.fynn.javavoxelengine.chunk;
 
 import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.utils.Array;
-import net.fynn.javavoxelengine.world.VoxelType;
+import net.fynn.javavoxelengine.voxel.VoxelType;
 
 /**
  * Verwaltet ein Gitter von Chunks.

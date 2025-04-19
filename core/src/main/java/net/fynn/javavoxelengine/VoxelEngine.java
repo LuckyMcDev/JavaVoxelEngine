@@ -19,7 +19,7 @@ import net.fynn.javavoxelengine.player.Crosshair;
 import net.fynn.javavoxelengine.player.Player;
 import net.fynn.javavoxelengine.chunk.Chunk;
 import net.fynn.javavoxelengine.chunk.ChunkGrid;
-import net.fynn.javavoxelengine.world.VoxelModelCache;
+import net.fynn.javavoxelengine.voxel.VoxelModelCache;
 
 /**
  * Hauptklasse der Voxel-Engine.
