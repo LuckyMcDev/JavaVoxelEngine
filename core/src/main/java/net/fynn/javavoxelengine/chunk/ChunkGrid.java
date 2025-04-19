@@ -44,15 +44,20 @@ public class ChunkGrid {
         }
     }
 
-    /** Returns the chunk at grid‐indices x,z, or null if out of bounds. */
+    /**
+     * Gibt den Chunk an einem x und z wert in dem Chunk Grid zurück
+     *
+     * @param gridX X wert im Grid
+     * @param gridZ Z wert im Grid
+     * @return Der Chunk an dieser Position
+     */
     public Chunk getChunk(int gridX, int gridZ) {
         if (gridX < 0 || gridX >= gridWidth || gridZ < 0 || gridZ >= gridDepth) return null;
         return chunks.get(gridX * gridDepth + gridZ);
     }
 
     /**
-     * Converts worldX/worldZ into grid indices, accounting
-     * for the fact that chunk (0,0) is at -halfWorldWidth.
+     * Konvertiert Welt X und Welt Y koordinaten in einen Chunk innerhalb des chunk grids
      */
     public Chunk getChunkAtWorld(float worldX, float worldZ) {
 
@@ -65,11 +70,23 @@ public class ChunkGrid {
         return getChunk(chunkIDX, chunkIDZ);
     }
 
+    /**
+     * Gibt die lokale position innerhalb eines chunks anhand von welt koordinaten zurück
+     *
+     * @param worldCoords welt Koordinaten
+     * @return Lokalen Koordinaten
+     */
     public Vector3 getChunkLocalCoords(Vector3 worldCoords) {
         return new Vector3(worldCoords.x % Chunk.WIDTH, worldCoords.y % Chunk.HEIGHT, worldCoords.z % Chunk.DEPTH);
     }
 
 
+    /**
+     * Gibt einen Block innerhalb eines Chunks anhand von Welt Koordinaten zurück
+     *
+     * @param worldCoords Die welt koordinate
+     * @return Den BlockTyp
+     */
     public VoxelType getBlockFromWorld(Vector3 worldCoords) {
         Chunk cnk = getChunkAtWorld(worldCoords.x,worldCoords.z);
 
@@ -88,6 +105,12 @@ public class ChunkGrid {
         return cnk.getBlock(localX, localY, localZ);
     }
 
+    /**
+     * Setzt einen Block in einen Chunk anhand von welt koordinaten
+     *
+     * @param worldCoords Die Welt Koordinaten
+     * @param type Mit welchen Typ der Block ersetzt werden soll
+     */
     public void setBlockFromWorld(Vector3 worldCoords, VoxelType type) {
         Chunk cnk = getChunkAtWorld(worldCoords.x,worldCoords.z);
 

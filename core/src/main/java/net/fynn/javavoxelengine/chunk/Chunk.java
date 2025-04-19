@@ -25,16 +25,16 @@ public class Chunk {
     public static final int HEIGHT = 64;
 
     /** Die Höhe eines Baumstammes*/
-    private static final int TRUNK_HEIGHT = 7;
+    public static final int TRUNK_HEIGHT = 7;
 
     /**Der radius der Blätter*/
-    private static final int LEAF_RADIUS  = 3;
+    public static final int LEAF_RADIUS  = 3;
 
-    private static final float CHUNK_RENDER_DISTANCE = 150f;
-    private static final float CHUNK_RENDER_DISTANCE_SQUARED = CHUNK_RENDER_DISTANCE * CHUNK_RENDER_DISTANCE;
+    public static final float CHUNK_RENDER_DISTANCE = 150f;
+    public static final float CHUNK_RENDER_DISTANCE_SQUARED = CHUNK_RENDER_DISTANCE * CHUNK_RENDER_DISTANCE;
 
     /** Die Voxeltypen, die diesen Chunk bilden. */
-    private final VoxelType[][][] blocks;
+    public final VoxelType[][][] blocks;
 
     /** Die Ursprungskoordinaten des Chunks. */
     public final int originX, originY, originZ;
@@ -62,7 +62,7 @@ public class Chunk {
     /**
      * Erstellt die Begrenzungsbox für den Chunk.
      */
-    private void createBoundingBox() {
+    public void createBoundingBox() {
         Vector3 min = new Vector3(originX, originY, originZ);
         Vector3 max = new Vector3(originX + WIDTH, originY + HEIGHT, originZ + DEPTH);
         boundingBox = new BoundingBox(min, max);
@@ -82,7 +82,7 @@ public class Chunk {
      *
      * @param seed Der Seed für den Perlin Generator.
      */
-    private void generateTerrain(int seed) {
+    public void generateTerrain(int seed) {
         // Erstellen eines Generator (MakeSomeNoise-Bibliothek) mit dem angegebenen Seed.
         Noise noise = new Noise(seed);
 
@@ -118,7 +118,7 @@ public class Chunk {
      *
      * @param seed Der Seed für die zufällige Generierung.
      */
-    private void generateTrees(int seed) {
+    public void generateTrees(int seed) {
         // Mischen des Ursprungs in den RNG, damit jeder Chunk deterministisch ist
         long mix = ((long)originX * 73856093L) ^ ((long)originZ * 19349663L) ^ seed;
         Random rand = new Random(mix);
@@ -182,7 +182,13 @@ public class Chunk {
     }
 
 
-    // Hilfsmethode zur Ermittlung der obersten festen Blockhöhe
+    /**
+     * Ermittelt den höchsten Y wert an einem X und Z wert
+     *
+     * @param x - X position
+     * @param z - Z position
+     * @return - Die Höhe / Y position
+     */
     public int getSurfaceHeight(int x, int z) {
         for (int y = HEIGHT - 1; y >= 0; y--) {
             VoxelType t = getBlock(x, y, z);
@@ -191,8 +197,15 @@ public class Chunk {
         return -1;
     }
 
-    // Einfache Grenzprüfung
-    private boolean inBounds(int x, int y, int z) {
+    /**
+     * Prüft, ob eine Koordinate in den bounds eines Chunks ist
+     *
+     * @param x - Die X Position
+     * @param y - Die Y Position
+     * @param z - Die Z Position
+     * @return - boolean, ob in bounds
+     */
+    public boolean inBounds(int x, int y, int z) {
         return x >= 0 && x < WIDTH
             && y >= 0 && y < HEIGHT
             && z >= 0 && z < DEPTH;

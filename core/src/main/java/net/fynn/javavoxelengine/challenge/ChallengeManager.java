@@ -6,14 +6,23 @@ import net.fynn.javavoxelengine.VoxelEngine;
 import net.fynn.javavoxelengine.gui.ThisImGui;
 
 public class ChallengeManager {
-    private ChallengeType activeType;
-    private long startTime;
-    private int collected;
 
-    private boolean playerWon = false;
-    private boolean playerLost = false;
+    /** Der jetzt grade aktive challenge typ */
+    public ChallengeType activeType;
 
-    /** Start a new run of the given type. */
+    /** Wann die challenge angefangen hat */
+    public long startTime;
+
+    /** Wie viele Äpfel schon gesammelt sind */
+    public int collected;
+
+    /** eine boolean ob der spieler gewonnen / verloren hat*/
+    public boolean playerWon = false;
+    public boolean playerLost = false;
+
+    /**
+     *  Startet einen neuen Run mit dem gegebenen Typ
+     */
     public void start(ChallengeType type) {
         this.activeType = type;
         this.startTime  = TimeUtils.millis();
@@ -21,6 +30,10 @@ public class ChallengeManager {
         resetWinLossFlags();
     }
 
+
+    /**
+     * Setzt den Challenge Manager zurück.
+     */
     public void reset() {
         activeType = null;
         collected = 0;
@@ -28,7 +41,9 @@ public class ChallengeManager {
         resetWinLossFlags();
     }
 
-    /** Call every frame to check timeouts, etc. */
+    /**
+     * Wird jeden frame aufgerufen um Loss zu prüfen
+     */
     public void update() {
         if (activeType == null) return;
         long elapsed = TimeUtils.timeSinceMillis(startTime);
@@ -39,7 +54,9 @@ public class ChallengeManager {
         }
     }
 
-    /** Should be called when an apple is successfully clicked. */
+    /**
+     * Wird aufgerufen, wenn ein Apfel aufgesammelt wird
+     */
     public void addOneAppleAndCheckComplete() {
         if (activeType == null) return;
         collected++;
@@ -50,10 +67,20 @@ public class ChallengeManager {
         }
     }
 
+    /**
+     * Gibt einfach nur den jetzigen apfel wert zurück
+     *
+     * @return - den jetzigen stand an aufgesammelten äpfeln
+     */
     public int  getCollected() {
         return collected;
     }
 
+    /**
+     * Gibt die gebrauchten Äpfel für die jetzt aktive challenge zurück
+     *
+     * @return - die gebrauchten Äpfel
+     */
     public int  getTarget() {
         return activeType == null ? 0 : activeType.getTargetApples();
     }
@@ -64,6 +91,11 @@ public class ChallengeManager {
         playerLost = false;
     }
 
+    /**
+     * Konvertiert millisekunden in sekunden und gibt die noch verbleibende Zeit zurück
+     *
+     * @return - noch verbleibende Zeit
+     */
     public float getTimeRemainingSecs() {
         if (activeType == null) return 0f;
         long elapsed = TimeUtils.timeSinceMillis(startTime);
@@ -80,15 +112,25 @@ public class ChallengeManager {
         return playerLost;
     }
 
+    /**
+     * Gibt den ausgewählten challenge typ namen zurück
+     *
+     * @return - der name des ausgewählten typs
+     */
     public String getModeName() {
         return activeType == null ? "" : activeType.getDisplayName();
     }
 
+    /**
+     * Ist eine Challenge aktiv
+     *
+     * @return - ob eine challenge aktiv ist
+     */
     public boolean isActive() {
         return activeType != null;
     }
 
-    /** Stops the current challenge. */
+    /** Beendet die jetzige challenge */
     public void end() {
         this.activeType = null;
     }
