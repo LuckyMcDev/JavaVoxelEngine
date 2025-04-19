@@ -2,6 +2,7 @@ package net.fynn.javavoxelengine.gui;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.backends.lwjgl3.Lwjgl3Graphics;
+import com.badlogic.gdx.math.collision.Ray;
 import imgui.ImGui;
 import imgui.ImGuiIO;
 import imgui.flag.ImGuiCond;
@@ -136,8 +137,8 @@ public class ThisImGui {
 
     private void renderDebugWindow(Camera camera, int renderedModelCount, ChunkGrid chunkGrid) {
         if (!showDebugWindow.get()) return;
-        ImGui.setNextWindowPos(0, Gdx.graphics.getHeight() - 100, ImGuiCond.Always);
-        ImGui.setNextWindowSize(Gdx.graphics.getWidth(), 100, ImGuiCond.Always);
+        ImGui.setNextWindowPos(0, Gdx.graphics.getHeight() - 150, ImGuiCond.Always);
+        ImGui.setNextWindowSize(Gdx.graphics.getWidth(), 150, ImGuiCond.Always);
         ImGui.begin("Debug Info", showDebugWindow,
             ImGuiWindowFlags.NoCollapse | ImGuiWindowFlags.NoTitleBar);
 
@@ -151,6 +152,10 @@ public class ThisImGui {
         Chunk currChunk = chunkGrid.getChunkAtWorld((int) camera.position.x, (int) camera.position.z);
         ImGui.text("Current Chunk: "+currChunk.originX+" "+currChunk.originZ);
         ImGui.text("Chunk Local Coords "+chunkGrid.getChunkLocalCoords(camera.position));
+
+        Ray ray = camera.getPickRay(Gdx.graphics.getWidth() / 2f, Gdx.graphics.getHeight() / 2f);
+        ImGui.text("Ray: "+ray);
+
         ImGui.end();
     }
 
