@@ -18,7 +18,6 @@ import net.fynn.javavoxelengine.player.Crosshair;
 import net.fynn.javavoxelengine.player.Player;
 import net.fynn.javavoxelengine.chunk.Chunk;
 import net.fynn.javavoxelengine.chunk.ChunkGrid;
-import net.fynn.javavoxelengine.screens.VoxelMainMenuScreen;
 import net.fynn.javavoxelengine.world.VoxelModelCache;
 
 /**
@@ -48,7 +47,6 @@ public class VoxelEngine extends Game {
      */
     @Override
     public void create() {
-
         modelBatch = new ModelBatch();
         environment = new Environment();
         environment.set(new ColorAttribute(ColorAttribute.AmbientLight, 0.8f, 0.8f, 0.8f, 1f));
@@ -74,13 +72,15 @@ public class VoxelEngine extends Game {
      */
     @Override
     public void render() {
-        setScreen(new VoxelMainMenuScreen());
 
         Gdx.gl.glViewport(0, 0, Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
         Gdx.gl.glClearColor(137f / 255f, 207f / 255f, 240f / 255f, 1f);
         Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT | GL20.GL_DEPTH_BUFFER_BIT);
 
         player.update(Gdx.graphics.getDeltaTime());
+
+        Gdx.input.setCursorCatched(true);
+        Gdx.input.setCursorPosition(Gdx.graphics.getWidth()/2, Gdx.graphics.getHeight()/2);
 
         challengeManager.update();
 
@@ -90,7 +90,7 @@ public class VoxelEngine extends Game {
             if (!chunk.shouldRenderChunk(chunk,player)) continue;
 
             Array<ModelInstance> voxelInstances = new Array<>();
-            GenerateVoxelInstances.gen(chunk,voxelInstances);
+            new GenerateVoxelInstances(chunk,voxelInstances);
 
             // Rendern und zählen
             for (ModelInstance instance : voxelInstances) {

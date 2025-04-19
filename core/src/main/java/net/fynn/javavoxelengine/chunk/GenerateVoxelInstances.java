@@ -8,6 +8,11 @@ import net.fynn.javavoxelengine.world.VoxelModelCache;
 import net.fynn.javavoxelengine.world.VoxelType;
 
 public class GenerateVoxelInstances {
+
+    public <voxelInstances> GenerateVoxelInstances(Chunk chunk, Array<ModelInstance> voxelInstances) {
+        gen(chunk,voxelInstances);
+    }
+
     public static void gen(Chunk chunk, Array<ModelInstance> voxelInstances) {
         final int W = Chunk.WIDTH, H = Chunk.HEIGHT, D = Chunk.DEPTH;
         boolean[][][] visited = new boolean[W][H][D];
