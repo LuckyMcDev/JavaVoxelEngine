@@ -59,29 +59,6 @@ Versucht durch anzeigen des Rays herauszufinden was falsch ist, keine ahnung
 
 ![what_is_even_wrong.png](readme_images%2Fwhat_is_even_wrong.png)
 
----i
-
-## ⚙️ Erste Schritte
-
-### Voraussetzungen
-
-- Java Development Kit (JDK) 17 oder höher
-- Git
-- Gradle (Wrapper enthalten)
-
-### Klonen und Ausführen
-
-```bash
-# Repository klonen
-git clone https://github.com/LuckyMcDev/JavaVoxelEngine.git
-cd JavaVoxelEngine
-
-# Engine bauen und starten
-./gradlew run
-```
-
-Das Anwendungsfenster startet automatisch. Verwende **W/A/S/D**, um dich zu bewegen, die **Maus**, um den Blick zu steuern, und **ESC**, um das ImGui-Overlay ein- oder auszublenden.
-
 ---
 
 ## 🎮 Steuerung
@@ -107,14 +84,8 @@ Das Anwendungsfenster startet automatisch. Verwende **W/A/S/D**, um dich zu bewe
 
 - **`core`**: Haupt-Spielschleife, Weltdatenstrukturen, Rendering-Pipeline.
 - **`lwjgl3`**: Low-Level-Fenster- und Eingabehandling via LWJGL3-Backend.
-- **`assets`**: Texturen, Shader und Audio-Ressourcen.
+- **`assets`**: Texturen
 
 ---
 
-## 📄 Lizenz
-
-Dieses Projekt ist lizenziert unter der Apache License 2.0. Details findest du in der [LICENSE](LICENSE)-Datei.
-
----
-
-*Entwickelt von Fynn / LuckyMcDev © 2025*
+*Entwickelt von Fynn © 2025*
