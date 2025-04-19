@@ -7,6 +7,9 @@ public class Crosshair {
 
     private ShapeRenderer shapeRenderer;
 
+    /**
+     * Zeichnet ein kleines Rechteck in der Mitte des Bildschirms mithilfe eines ShapeRenderers
+     */
     public void render() {
         shapeRenderer = new ShapeRenderer();
 
@@ -22,6 +25,9 @@ public class Crosshair {
         shapeRenderer.end();
     }
 
+    /**
+     * Destructor vom Shape Renderer
+     */
     public void dispose() {
         shapeRenderer.dispose();
     }

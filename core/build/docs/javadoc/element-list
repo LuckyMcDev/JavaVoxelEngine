@@ -1,4 +1,7 @@
 net.fynn.javavoxelengine
-net.fynn.javavoxelengine.imgui
+net.fynn.javavoxelengine.challenge
+net.fynn.javavoxelengine.chunk
+net.fynn.javavoxelengine.gui
 net.fynn.javavoxelengine.player
-net.fynn.javavoxelengine.world
+net.fynn.javavoxelengine.util
+net.fynn.javavoxelengine.voxel
