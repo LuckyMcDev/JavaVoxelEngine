@@ -7,8 +7,8 @@ import net.fynn.javavoxelengine.util.Predicate3;
 import net.fynn.javavoxelengine.world.VoxelModelCache;
 import net.fynn.javavoxelengine.world.VoxelType;
 
-public class VoxelInstances {
-    public void generateVoxelInstances(Chunk chunk, Array<ModelInstance> voxelInstances) {
+public class GenerateVoxelInstances {
+    public static void gen(Chunk chunk, Array<ModelInstance> voxelInstances) {
         final int W = Chunk.WIDTH, H = Chunk.HEIGHT, D = Chunk.DEPTH;
         boolean[][][] visited = new boolean[W][H][D];
 
@@ -95,7 +95,7 @@ public class VoxelInstances {
      * @param z Die Z-Koordinate des Blocks.
      * @return True, wenn der Block der Luft ausgesetzt ist, sonst false.
      */
-    public boolean isBlockExposedToAir(Chunk chunk, int x, int y, int z) {
+    public static boolean isBlockExposedToAir(Chunk chunk, int x, int y, int z) {
         if (chunk.getBlock(x, y, z) == VoxelType.AIR) return false;
 
         // Korrekte Nachbarprüfungen (6 Richtungen)

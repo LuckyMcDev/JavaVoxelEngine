@@ -1,24 +1,24 @@
 package net.fynn.javavoxelengine;
 
 import com.badlogic.gdx.ApplicationAdapter;
+import com.badlogic.gdx.Game;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.g3d.*;
 import com.badlogic.gdx.graphics.g3d.attributes.ColorAttribute;
 import com.badlogic.gdx.graphics.g3d.environment.*;
-import com.badlogic.gdx.math.Frustum;
 import com.badlogic.gdx.utils.Array;
-import com.badlogic.gdx.math.collision.BoundingBox;
 
 import net.fynn.javavoxelengine.challenge.AppleCollector;
 import net.fynn.javavoxelengine.challenge.ChallengeManager;
-import net.fynn.javavoxelengine.chunk.VoxelInstances;
+import net.fynn.javavoxelengine.chunk.GenerateVoxelInstances;
 import net.fynn.javavoxelengine.imgui.ThisImGui;
 import net.fynn.javavoxelengine.player.Crosshair;
 import net.fynn.javavoxelengine.player.Player;
 import net.fynn.javavoxelengine.chunk.Chunk;
 import net.fynn.javavoxelengine.chunk.ChunkGrid;
+import net.fynn.javavoxelengine.screens.VoxelMainMenuScreen;
 import net.fynn.javavoxelengine.world.VoxelModelCache;
 
 /**
@@ -28,18 +28,16 @@ import net.fynn.javavoxelengine.world.VoxelModelCache;
  * @author Fynn
  * @version 1.1
  */
-public class VoxelEngine extends ApplicationAdapter {
+public class VoxelEngine extends Game {
     // Rendering
     private ModelBatch modelBatch;
     private Environment environment;
-    private Frustum frustum;
     private ThisImGui thisImGui;
     private Crosshair crosshair;
 
     // World
     private ChunkGrid chunkGrid;
     private Player player;
-    private VoxelInstances voxelInstancegen;
 
     // Challenges
     private ChallengeManager challengeManager;
@@ -50,6 +48,7 @@ public class VoxelEngine extends ApplicationAdapter {
      */
     @Override
     public void create() {
+
         modelBatch = new ModelBatch();
         environment = new Environment();
         environment.set(new ColorAttribute(ColorAttribute.AmbientLight, 0.8f, 0.8f, 0.8f, 1f));
@@ -59,10 +58,7 @@ public class VoxelEngine extends ApplicationAdapter {
 
         chunkGrid = new ChunkGrid(10, 10, 1237161111); // Keine Chunk-Größe mehr nötig
 
-        voxelInstancegen = new VoxelInstances();
-
         player = new Player(chunkGrid);
-        frustum = player.getCamera().frustum;
 
         challengeManager = new ChallengeManager();
 
@@ -78,6 +74,8 @@ public class VoxelEngine extends ApplicationAdapter {
      */
     @Override
     public void render() {
+        setScreen(new VoxelMainMenuScreen());
+
         Gdx.gl.glViewport(0, 0, Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
         Gdx.gl.glClearColor(137f / 255f, 207f / 255f, 240f / 255f, 1f);
         Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT | GL20.GL_DEPTH_BUFFER_BIT);
@@ -92,7 +90,7 @@ public class VoxelEngine extends ApplicationAdapter {
             if (!chunk.shouldRenderChunk(chunk,player)) continue;
 
             Array<ModelInstance> voxelInstances = new Array<>();
-            voxelInstancegen.generateVoxelInstances(chunk, voxelInstances);
+            GenerateVoxelInstances.gen(chunk,voxelInstances);
 
             // Rendern und zählen
             for (ModelInstance instance : voxelInstances) {
