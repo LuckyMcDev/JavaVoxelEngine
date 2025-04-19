@@ -8,15 +8,18 @@ import net.fynn.javavoxelengine.chunk.ChunkGrid;
 import net.fynn.javavoxelengine.voxel.VoxelType;
 
 public class AppleCollector {
-    /** Call this when the player clicks to try and collect an apple. */
+    /**
+     * Eine Klasse, die den ray trace um einen apfel aufzusammeln durchführt.
+     *
+     * @param camera - Die perspektive camera von dem spieler
+     * @param chunkGrid - Das jetzt benutzte Chunk Grid
+     * @param challengeManager - Der challenge manager, um den apple-check durchzuführen
+     */
     public void tryCollectApple(PerspectiveCamera camera, ChunkGrid chunkGrid, ChallengeManager challengeManager) {
         Ray ray = camera.getPickRay(Gdx.graphics.getWidth() / 2f, Gdx.graphics.getHeight() / 2f);
 
         System.out.println("Start ------------------------------");
         for (int distance = 0; distance < 20; distance++) {
-            float checkX = ray.origin.x + ray.direction.x * distance;
-            float checkY = ray.origin.y + ray.direction.y * distance;
-            float checkZ = ray.origin.z + ray.direction.z * distance;
 
             Vector3 endPoint = new Vector3();
 
