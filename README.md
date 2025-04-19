@@ -1,6 +1,8 @@
 # Java Voxel Engine
 
-Eine modulare und erweiterbare voxelbasierte Spiele-Engine in Java, basierend auf LWJGL3 und LibGDX. Ursprünglich als fortgeschrittenes Projekt für den Informatikunterricht entwickelt, demonstriert diese Engine Welterzeugung, Performance-Optimierungen, ImGui-basierte Debug-Tools und ein Mini-Spiel im Herausforderung-Modus.
+Eine Voxel Engine in Java mit custom Chunk und Perlin noise basierter terrain generation.
+Ein Imgui fenster als overlay.
+Und ein parr challenges zum ausprobieren (man muss äpfel sammeln)
 
 ---
 
