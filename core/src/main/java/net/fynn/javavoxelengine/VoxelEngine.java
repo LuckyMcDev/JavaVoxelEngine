@@ -1,6 +1,5 @@
 package net.fynn.javavoxelengine;
 
-import com.badlogic.gdx.ApplicationAdapter;
 import com.badlogic.gdx.Game;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
@@ -15,7 +14,7 @@ import imgui.ImGuiIO;
 import net.fynn.javavoxelengine.challenge.AppleCollector;
 import net.fynn.javavoxelengine.challenge.ChallengeManager;
 import net.fynn.javavoxelengine.chunk.GenerateVoxelInstances;
-import net.fynn.javavoxelengine.imgui.ThisImGui;
+import net.fynn.javavoxelengine.gui.ThisImGui;
 import net.fynn.javavoxelengine.player.Crosshair;
 import net.fynn.javavoxelengine.player.Player;
 import net.fynn.javavoxelengine.chunk.Chunk;

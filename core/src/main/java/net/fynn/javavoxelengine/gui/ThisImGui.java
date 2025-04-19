@@ -1,8 +1,7 @@
-package net.fynn.javavoxelengine.imgui;
+package net.fynn.javavoxelengine.gui;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.backends.lwjgl3.Lwjgl3Graphics;
-import com.badlogic.gdx.math.Vector3;
 import imgui.ImGui;
 import imgui.ImGuiIO;
 import imgui.flag.ImGuiCond;
@@ -11,7 +10,6 @@ import imgui.flag.ImGuiWindowFlags;
 import imgui.gl3.ImGuiImplGl3;
 import imgui.glfw.ImGuiImplGlfw;
 import imgui.type.ImBoolean;
-import imgui.type.ImInt;
 import net.fynn.javavoxelengine.challenge.ChallengeManager;
 import net.fynn.javavoxelengine.challenge.ChallengeType;
 import org.lwjgl.glfw.GLFW;
