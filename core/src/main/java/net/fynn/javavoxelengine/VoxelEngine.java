@@ -10,6 +10,8 @@ import com.badlogic.gdx.graphics.g3d.attributes.ColorAttribute;
 import com.badlogic.gdx.graphics.g3d.environment.*;
 import com.badlogic.gdx.utils.Array;
 
+import imgui.ImGui;
+import imgui.ImGuiIO;
 import net.fynn.javavoxelengine.challenge.AppleCollector;
 import net.fynn.javavoxelengine.challenge.ChallengeManager;
 import net.fynn.javavoxelengine.chunk.GenerateVoxelInstances;
@@ -79,8 +81,18 @@ public class VoxelEngine extends Game {
 
         player.update(Gdx.graphics.getDeltaTime());
 
-        Gdx.input.setCursorCatched(true);
-        Gdx.input.setCursorPosition(Gdx.graphics.getWidth()/2, Gdx.graphics.getHeight()/2);
+        //Cursor catching and updating
+        ImGuiIO io = ImGui.getIO();
+        if (Gdx.input.isKeyJustPressed(Input.Keys.ESCAPE)) {
+            Gdx.input.setCursorCatched(false);
+        }
+        if (!Gdx.input.isCursorCatched() &&
+            (Gdx.input.isButtonJustPressed(Input.Buttons.LEFT) ||
+                Gdx.input.isButtonJustPressed(Input.Buttons.RIGHT) ||
+                Gdx.input.isButtonJustPressed(Input.Buttons.MIDDLE)) &&
+            !io.getWantCaptureMouse()) {
+            Gdx.input.setCursorCatched(true);
+        }
 
         challengeManager.update();
 
