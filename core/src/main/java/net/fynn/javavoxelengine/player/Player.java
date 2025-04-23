@@ -51,45 +51,61 @@ public class Player {
      * @param delta Zeit seit letztem Frame in Sekunden
      */
     public void update(float delta) {
-        // 0) Alte Position merken (für horizontale Glättung)
+        // 0) Save old position for horizontal smoothing
         Vector3 oldPos = new Vector3(camera.position);
 
-        // 1) Horizontalbewegung & Look
-        controller.update(delta);
+        // 1) Calculate forward and right vectors based on the camera's direction
+        Vector3 forward = new Vector3(camera.direction.x, 0f, camera.direction.z).nor();  // Remove Y component to stay on the XZ plane
+        Vector3 right = new Vector3(forward.z, 0f, -forward.x).nor();  // Right vector is perpendicular to forward in XZ plane
 
-        // 2) Sprung
+        // Movement speed
+        float moveSpeed = 14f;
+
+        // 2) Move the player based on WASD input relative to the camera's orientation
+        if (Gdx.input.isKeyPressed(Input.Keys.W)) {
+            camera.position.add(forward.x * moveSpeed * delta, 0f, forward.z * moveSpeed * delta); // Move forward
+        }
+        if (Gdx.input.isKeyPressed(Input.Keys.S)) {
+            camera.position.add(-forward.x * moveSpeed * delta, 0f, -forward.z * moveSpeed * delta); // Move backward
+        }
+        if (Gdx.input.isKeyPressed(Input.Keys.A)) {
+            camera.position.add(right.x * moveSpeed * delta, 0f, right.z * moveSpeed * delta); // Move left
+        }
+        if (Gdx.input.isKeyPressed(Input.Keys.D)) {
+            camera.position.add(-right.x * moveSpeed * delta, 0f, -right.z * moveSpeed * delta); // Move right
+        }
+
+        // 3) Apply jumping if on the ground
         if (Gdx.input.isKeyJustPressed(Input.Keys.SPACE) && isOnGround) {
             vy = JUMP_POWER;
             isOnGround = false;
         }
 
-        // 3) Schwerkraft anwenden
+        // 4) Apply gravity
         vy += GRAVITY * delta;
         camera.position.y += vy * delta;
 
-        // 4) Ground-Collision (Y sofort korrigieren)
-        float groundY = findSolidGroundY(
-            camera.position.x,
-            camera.position.z
-        ) + EYE_HEIGHT;
+        // 5) Ground collision (Y axis correction)
+        float groundY = findSolidGroundY(camera.position.x, camera.position.z) + EYE_HEIGHT;
         if (camera.position.y < groundY) {
-            camera.position.y = groundY;  // Sofortiger Snap
+            camera.position.y = groundY;  // Instant snap to ground level
             vy = 0f;
             isOnGround = true;
         }
 
-        // 5) Nur X/Z glätten, Y bleibt (keine Verzögerung beim Aufspringen)
+        // 6) Horizontal smoothing (only for X and Z axes)
         Vector3 targetPos = new Vector3(camera.position);
-        float alpha = MathUtils.clamp(delta * 15f, 0f, 1f);  // höhere Glätt-Rate
+        float alpha = MathUtils.clamp(delta * 15f, 0f, 1f); // Higher smoothing rate
         float smoothX = MathUtils.lerp(oldPos.x, targetPos.x, alpha);
         float smoothZ = MathUtils.lerp(oldPos.z, targetPos.z, alpha);
         camera.position.x = smoothX;
         camera.position.z = smoothZ;
-        // Y bleibt unverändert (direkt gecollided)
 
-        // 6) Kameramatrix updaten
+        // 7) Update camera matrix
         camera.update();
     }
+
+
 
     /**
      * Gibt von dem Spieler die Kamera zurück
