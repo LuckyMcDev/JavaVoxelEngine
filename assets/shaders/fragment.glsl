@@ -8,11 +8,9 @@ varying vec3 v_worldPosition;
 varying float v_distance;
 
 void main() {
-    // Increase the ambient light to make the scene brighter
-    float ambient = 0.35; // Brighter ambient light
+    float ambient = 0.35;
     float lightStrength = ambient + (1.0 - ambient) * v_lightIntensity;
 
-    // Enhance the base color with some warmth
     vec3 baseColor = v_color.rgb * lightStrength * vec3(1.0, 0.9, 0.8); // Slightly warmer tones
 
     // FOG
