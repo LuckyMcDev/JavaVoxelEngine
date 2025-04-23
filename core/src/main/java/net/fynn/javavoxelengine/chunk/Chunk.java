@@ -114,42 +114,71 @@ public class Chunk {
 
     /**
      * Generiert Bäume im Chunk.
-     * Die Bäume sind entweder Hell oder Dunkelgrün
+     * Die Bäume sind entweder Hell- oder Dunkelgrün, mit variablem Stamm,
+     * zusätzlichem Ast-Detail und spawn keinem an den Chunk-Rändern.
      *
      * @param seed Der Seed für die zufällige Generierung.
      */
     public void generateTrees(int seed) {
-        // Mischen des Ursprungs in den RNG, damit jeder Chunk deterministisch ist
+        // Deterministischer RNG pro Chunk
         long mix = ((long)originX * 73856093L) ^ ((long)originZ * 19349663L) ^ seed;
         Random rand = new Random(mix);
 
         // 70% Chance, einen Baum zu spawnen
         if (rand.nextDouble() >= 0.7) return;
 
-        // Wähle zufällige x, z innerhalb dieses Chunks
-        int tx = rand.nextInt(WIDTH);
-        int tz = rand.nextInt(DEPTH);
+        // Abstand zu den Chunk-Rändern in Blöcken
+        final int BORDER = 4;
+        // Wähle zufällige (tx,tz) mit mind. BORDER Abstand zu Rand
+        int tx = BORDER + rand.nextInt(WIDTH  - 2 * BORDER);
+        int tz = BORDER + rand.nextInt(DEPTH  - 2 * BORDER);
 
-        // Finde die Oberflächen-Y (erster Nicht-Luft-Block von oben)
+        // Finde Oberflächenhöhe
         int ty = getSurfaceHeight(tx, tz);
-        if (ty < 0 || ty + TRUNK_HEIGHT + LEAF_RADIUS >= HEIGHT) return;
+        if (ty < 0 || ty + TRUNK_HEIGHT + LEAF_RADIUS + 1 >= HEIGHT) return;
 
-        // Entscheide, ob die Blätter hell oder dunkel sein sollen
-        VoxelType leafType = rand.nextBoolean() ? VoxelType.LEAVES_LIGHT : VoxelType.LEAVES_DARK;
+        // Variierende Stammhöhe und Blatt-Radius
+        int trunkHeight = TRUNK_HEIGHT - 1 + rand.nextInt(3);          // z.B. TRUNK_HEIGHT±1
+        int leafRadius  = LEAF_RADIUS  - 1 + rand.nextInt(3);          // z.B. LEAF_RADIUS±1
 
-        // Baue den Stamm
-        for (int i = 1; i <= TRUNK_HEIGHT; i++) {
+        // Blatt-Farbe
+        VoxelType leafType = rand.nextBoolean()
+            ? VoxelType.LEAVES_LIGHT
+            : VoxelType.LEAVES_DARK;
+
+        // 1) Stamm aufbauen
+        for (int i = 1; i <= trunkHeight; i++) {
             setBlock(tx, ty + i, tz, VoxelType.WOOD);
         }
 
-        // Baue eine einfache Blattkrone
-        for (int dx = -LEAF_RADIUS; dx <= LEAF_RADIUS; dx++) {
-            for (int dz = -LEAF_RADIUS; dz <= LEAF_RADIUS; dz++) {
-                // Eine kleine Kleeblattform unter Verwendung der Manhattan-Distanz
-                if (Math.abs(dx) + Math.abs(dz) <= LEAF_RADIUS) {
-                    int lx = tx + dx;
-                    int lz = tz + dz;
-                    for (int dy = TRUNK_HEIGHT; dy <= TRUNK_HEIGHT + 1; dy++) {
+        // 2) Ein paar zufällige Seitentriebe / Äste
+        for (int dir = 0; dir < 4; dir++) {
+            if (rand.nextDouble() < 0.25) {
+                int branchY = ty + 2 + rand.nextInt(trunkHeight - 2);
+                int dx = (dir == 0 ?  1 : dir == 1 ? -1 : 0);
+                int dz = (dir == 2 ?  1 : dir == 3 ? -1 : 0);
+                int bx = tx + dx, bz = tz + dz;
+                if (inBounds(bx, branchY, bz)) {
+                    setBlock(bx, branchY, bz, VoxelType.WOOD);
+                    // Spitze mit Blättern
+                    for (int lx = bx - 1; lx <= bx + 1; lx++) {
+                        for (int lz = bz - 1; lz <= bz + 1; lz++) {
+                            int ly = branchY;
+                            if (inBounds(lx, ly, lz) && getBlock(lx, ly, lz) == VoxelType.AIR) {
+                                setBlock(lx, ly, lz, leafType);
+                            }
+                        }
+                    }
+                }
+            }
+        }
+
+        // 3) Blattkrone in Manhattan-Form
+        for (int dx = -leafRadius; dx <= leafRadius; dx++) {
+            for (int dz = -leafRadius; dz <= leafRadius; dz++) {
+                if (Math.abs(dx) + Math.abs(dz) <= leafRadius) {
+                    int lx = tx + dx, lz = tz + dz;
+                    for (int dy = trunkHeight; dy <= trunkHeight + 1; dy++) {
                         int ly = ty + dy;
                         if (inBounds(lx, ly, lz) && getBlock(lx, ly, lz) == VoxelType.AIR) {
                             setBlock(lx, ly, lz, leafType);
@@ -159,17 +188,15 @@ public class Chunk {
             }
         }
 
-        for (int dx = -LEAF_RADIUS; dx <= LEAF_RADIUS; dx++) {
-            for (int dz = -LEAF_RADIUS; dz <= LEAF_RADIUS; dz++) {
-                if (Math.abs(dx) + Math.abs(dz) <= LEAF_RADIUS) {
-                    int lx = tx + dx;
-                    int lz = tz + dz;
-                    for (int dy = TRUNK_HEIGHT; dy <= TRUNK_HEIGHT + 1; dy++) {
+        // 4) Äpfel unter zufälligen Blättern
+        for (int dx = -leafRadius; dx <= leafRadius; dx++) {
+            for (int dz = -leafRadius; dz <= leafRadius; dz++) {
+                if (Math.abs(dx) + Math.abs(dz) <= leafRadius) {
+                    int lx = tx + dx, lz = tz + dz;
+                    for (int dy = trunkHeight; dy <= trunkHeight + 1; dy++) {
                         int ly = ty + dy;
                         if (inBounds(lx, ly, lz) && getBlock(lx, ly, lz) != VoxelType.AIR) {
-                            // 20% chance per leaf block
                             if (rand.nextDouble() < 0.2) {
-                                // place apple one block below this leaf
                                 if (inBounds(lx, ly - 1, lz) && getBlock(lx, ly - 1, lz) == VoxelType.AIR) {
                                     setBlock(lx, ly - 1, lz, VoxelType.APPLE);
                                 }
@@ -180,6 +207,7 @@ public class Chunk {
             }
         }
     }
+
 
 
     /**
