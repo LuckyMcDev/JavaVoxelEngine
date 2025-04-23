@@ -80,6 +80,122 @@ In diesem Code kann man sehen wie ich den ray mit der position entlang gehe.
 Ich weiss noch nicht ob ich noch ein paar mehr updates wie zum beispiel einen deffrered renderer
 screib oder so etwas.
 
+Richtig cool wie deine Readme aufgebaut ist!  
+Wenn du bei **15. Shaders** weitermachen willst und noch Shader-Grundlagen + was du genau gemacht hast erklären möchtest, können wir deinen Stil so weiterziehen: Locker, ein bisschen Storytelling drin, viele Bilder/Erklärungen.
+
+Hier ein Vorschlag, wie du den nächsten Abschnitt machen könntest:
+
+---
+
+## 15. Shaders
+
+Ich hatte etwas Zeit und habe angefangen, mich mit **Shaders** zu beschäftigen.
+
+**Was ist ein Shader überhaupt?**  
+Ein Shader ist einfach ein kleines Programm, das auf der Grafikkarte läuft.  
+Statt, dass die CPU Pixel oder Dreiecke malt, wird die Arbeit an die GPU ausgelagert — die kann das *viel schneller*.
+
+Es gibt verschiedene Arten von Shadern:
+
+- **Vertex Shader**  
+  Bestimmt, wo ein Punkt (Vertex) am Bildschirm angezeigt wird.  
+  ➔ Hier kann man z.B. Positionen verändern, um Objekte wackeln zu lassen oder sie größer/kleiner zu machen.
+
+- **Fragment Shader**  
+  Bestimmt, welche Farbe ein Pixel bekommt.  
+  ➔ Hier passieren Dinge wie Texturen aufmalen, Beleuchtung berechnen oder Spezialeffekte.
+
+
+
+
+---
+
+**Was ich gemacht habe:**
+- Zuerst einen super simplen Shader gebaut, der einfach nur alles schwarz gemacht hat 😅  
+  ![shader_shenanigans_work_but_black.png](readme_images/shader_shenanigans_work_but_black.png)
+
+- Dann herausgefunden, dass ich die Lichtberechnung vergessen hatte.  
+  ➔ Also Lighting in den Fragment Shader eingebaut!
+
+- Ergebnis:  
+  Jetzt werden Blöcke richtig schön beleuchtet 🎉
+
+  ![fixed_the_shaders_not_having_lighting.png](readme_images/fixed_the_shaders_not_having_lighting.png)
+
+- Ich habe dann noch ein bisschen rumgespielt und spaßeshalber alle Shader auf ganz rot gestellt, um zu testen ob es wirklich funktioniert:
+
+  ![really_red_apples.png](readme_images/really_red_apples.png)
+
+Alright, dann packen wir noch einen kleinen Shader-Snippet dazu – einfach erklärt und im Stil deiner Readme. So könnte das aussehen:
+
+---
+
+**Ein mini Shader Beispiel**
+
+Hier ein **ganz einfacher Shader**, der Blöcke einfärbt und ein bisschen Licht draufrechnet.
+
+**Vertex Shader** (`vertex.glsl`):
+
+```glsl
+#version 330 core
+
+layout(location = 0) in vec3 aPos;    // Position des Vertex
+layout(location = 1) in vec3 aNormal; // Normale (für Lichtberechnung)
+
+uniform mat4 model;
+uniform mat4 view;
+uniform mat4 projection;
+
+out vec3 FragPos;   // Weltposition des Fragments
+out vec3 Normal;    // Normale zum Fragment
+
+void main()
+{
+    FragPos = vec3(model * vec4(aPos, 1.0));
+    Normal = mat3(transpose(inverse(model))) * aNormal;  
+
+    gl_Position = projection * view * model * vec4(aPos, 1.0);
+}
+```
+
+---
+
+**Fragment Shader** (`fragment.glsl`):
+
+```glsl
+#version 330 core
+
+in vec3 FragPos;
+in vec3 Normal;
+
+out vec4 FragColor;
+
+uniform vec3 lightPos; 
+uniform vec3 lightColor;
+uniform vec3 objectColor;
+
+void main()
+{
+    // Richtung vom Fragment zum Licht
+    vec3 lightDir = normalize(lightPos - FragPos);
+    
+    // Lichtintensität (Lambert'sches Gesetz)
+    float diff = max(dot(Normal, lightDir), 0.0);
+    
+    vec3 diffuse = diff * lightColor;
+    vec3 result = (diffuse + vec3(0.1)) * objectColor; // + etwas Ambient Light
+
+    FragColor = vec4(result, 1.0);
+}
+```
+
+---
+
+**Was dieser Shader macht:**
+- Der **Vertex Shader** transformiert die Welt-Koordinaten korrekt auf den Bildschirm.
+- Der **Fragment Shader** berechnet die Farbe basierend auf der Lichtposition und der Oberfläche des Blocks.
+
+
 ---
 
 ## 🎮 Steuerung
