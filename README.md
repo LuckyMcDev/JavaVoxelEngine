@@ -59,6 +59,27 @@ Versucht durch anzeigen des Rays herauszufinden was falsch ist, keine ahnung
 
 ![what_is_even_wrong.png](readme_images%2Fwhat_is_even_wrong.png)
 
+### 13. Herausgefunden was Falsch ist!
+
+Mir wurde klar das irgendwas nmicht stimmt, also habe ich mir alle daten angeschaut die mit den Ray
+und anderem zu tun hat. das sah dann so aus:
+
+![img_2.png](readme_images%2Fimg_2.png)
+
+Als ich mir das genauer angeschaut hab, habe ich gesehen das die Position des rays nicht stimmt!
+Wenn man genau hinschaut sieht man in diesem ScreenShot schon was falsch ist ;)
+
+als das herausgefunden war, habe ich den raytracer umgeschrieben:
+
+In diesem Code kann man sehen wie ich den ray mit der position entlang gehe.
+
+![code_for_raytracer.png](readme_images%2Fcode_for_raytracer.png)
+
+### 14. Endlich Fertig?
+
+Ich weiss noch nicht ob ich noch ein paar mehr updates wie zum beispiel einen deffrered renderer
+screib oder so etwas.
+
 ---
 
 ## 🎮 Steuerung
