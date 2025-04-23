@@ -120,6 +120,12 @@ public class VoxelEngine extends Game {
         // Challenge-Timeout prüfen
         challengeManager.update();
 
+
+        // Culling
+        Gdx.gl.glEnable(GL20.GL_CULL_FACE);
+        Gdx.gl.glCullFace(GL20.GL_BACK);
+        Gdx.gl.glFrontFace(GL20.GL_CCW);
+
         // Welt rendern
         modelBatch.begin(player.getCamera());
         int renderedModelCount = 0;
