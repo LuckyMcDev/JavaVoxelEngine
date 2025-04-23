@@ -13,6 +13,12 @@ public class GenerateVoxelInstances {
         gen(chunk,voxelInstances);
     }
 
+    /**
+     * Die generations funktion
+     *
+     * @param chunk Der zu generierende Chunk
+     * @param voxelInstances Das Array in das die Voxel Instanzen geschrieben werden
+     */
     public static void gen(Chunk chunk, Array<ModelInstance> voxelInstances) {
         final int W = Chunk.WIDTH, H = Chunk.HEIGHT, D = Chunk.DEPTH;
         boolean[][][] visited = new boolean[W][H][D];

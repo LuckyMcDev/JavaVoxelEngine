@@ -34,10 +34,16 @@ public class ThisImGui {
     private final ImBoolean showWinWindow = new ImBoolean(false);
     private final ImBoolean showLossWindow = new ImBoolean(false);
 
+    /**
+     * Die ImGui funktion die das Fenster erstellt
+     */
     public ThisImGui() {
         create();
     }
 
+    /**
+     * Initialisiert alles was ImGui braucht
+     */
     private void create() {
         long windowHandle = ((Lwjgl3Graphics) Gdx.graphics).getWindow().getWindowHandle();
         GLFW.glfwMakeContextCurrent(windowHandle);
@@ -254,6 +260,9 @@ public class ThisImGui {
     }
 
 
+    /**
+     * Die Dispose funktion des ImGui's
+     */
     public void dispose() {
         imGuiGl3.dispose();
         imGuiGlfw.dispose();

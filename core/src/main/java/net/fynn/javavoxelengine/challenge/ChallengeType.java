@@ -5,7 +5,7 @@ package net.fynn.javavoxelengine.challenge;
  */
 public enum ChallengeType {
     /**
-     * Die verschiedenen Challenge type, einfach, medium und schwer und ein Debug modus
+     * Die verschiedenen Challenge typen, einfach, medium und schwer und ein Debug modus
      */
     EASY   ("Easy",   10, 60000),
     MEDIUM ("Medium", 20, 60000),

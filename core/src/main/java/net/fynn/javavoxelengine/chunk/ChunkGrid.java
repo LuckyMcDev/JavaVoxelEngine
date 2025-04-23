@@ -58,6 +58,11 @@ public class ChunkGrid {
 
     /**
      * Konvertiert Welt X und Welt Y koordinaten in einen Chunk innerhalb des chunk grids
+     *
+     * @param worldX Die X koordinate
+     * @param worldZ Die Y koordinate
+     *
+     * @return Der Chunk an der Pos
      */
     public Chunk getChunkAtWorld(float worldX, float worldZ) {
 

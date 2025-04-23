@@ -168,6 +168,8 @@ public class VoxelEngine extends Game {
 
     /**
      * Optional: Getter für den aktuell verwendeten Welt-Seed.
+     *
+     * @return Der Welt Seed
      */
     public long getWorldSeed() {
         return worldSeed;

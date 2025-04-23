@@ -23,6 +23,11 @@ public class Player {
 
     private boolean isOnGround = false;
 
+    /**
+     * Die Spieler Klasse mit Chunk Grid eingabe, in dem er sich befindet
+     *
+     * @param chunkGrid Das Chunk Grid in dem sich der Spieler befindet
+     */
     public Player(ChunkGrid chunkGrid) {
         this.chunkGrid = chunkGrid;
 
@@ -42,7 +47,7 @@ public class Player {
     }
 
     /**
-     * Muss jede Frame aufgerufen werden.
+     * Muss jeden Frame aufgerufen werden.
      * @param delta Zeit seit letztem Frame in Sekunden
      */
     public void update(float delta) {
@@ -86,6 +91,11 @@ public class Player {
         camera.update();
     }
 
+    /**
+     * Gibt von dem Spieler die Kamera zurück
+     *
+     * @return Die kamera des Spielers
+     */
     public PerspectiveCamera getCamera() {
         return camera;
     }

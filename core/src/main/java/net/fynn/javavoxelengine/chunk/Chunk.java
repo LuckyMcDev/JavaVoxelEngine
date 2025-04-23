@@ -284,6 +284,7 @@ public class Chunk {
      * Bestimmt, ob ein Chunk basierend auf der Entfernung gerendert werden soll.
      *
      * @param chunk Der zu überprüfende Chunk.
+     * @param player Der spieler auf dem die entscheidung basiert
      * @return True, wenn der Chunk gerendert werden soll, sonst false.
      */
     public boolean shouldRenderChunk(Chunk chunk, Player player) {
@@ -298,6 +299,7 @@ public class Chunk {
      * Überprüft, ob ein Chunk im Sichtfeld der Kamera liegt.
      *
      * @param chunk Der zu überprüfende Chunk.
+     * @param frustum Das Frustum in der den Chunk sein muss
      * @return True, wenn der Chunk sichtbar ist, sonst false.
      */
     public boolean isChunkVisible(Chunk chunk, Frustum frustum) {

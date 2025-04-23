@@ -16,12 +16,15 @@ public class ChallengeManager {
     /** Wie viele Äpfel schon gesammelt sind */
     public int collected;
 
-    /** eine boolean ob der spieler gewonnen / verloren hat*/
+    /** eine boolean ob der spieler gewonnen hat*/
     public boolean playerWon = false;
+    /** eine boolean ob der spieler verloren hat*/
     public boolean playerLost = false;
 
     /**
-     *  Startet einen neuen Run mit dem gegebenen Typ
+     * Startet eine neue challenge
+     *
+     * @param type Die art an challenge (easy/medium etc)
      */
     public void start(ChallengeType type) {
         this.activeType = type;
@@ -102,12 +105,18 @@ public class ChallengeManager {
         return Math.max(0f, (activeType.getTimeLimitMs() - elapsed) / 1000f);
     }
 
-    /** Gibt den playerWon status zurück */
+    /** Gibt den playerWon status zurück
+     *
+     * @return den status
+     *  */
     public boolean hasPlayerWon() {
         return playerWon;
     }
 
-    /** Gibt den playerLost status zurück */
+    /** Gibt den playerLost status zurück
+     *
+     * @return den status
+     * */
     public boolean hasPlayerLost() {
         return playerLost;
     }
