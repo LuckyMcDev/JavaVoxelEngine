@@ -20,8 +20,11 @@ public class VoxelModelCache {
      */
     public static void initialize(float width, float height, float depth) {
         for (VoxelType type : VoxelType.values()) {
-            if (type.isVisible()) {
-                modelCache.put(type, Voxel.createCube(width, height, depth, type));
+            if (!type.isVisible()) continue;
+
+            Model model = Voxel.createCube(width, height, depth, type);
+            if (model != null) {
+                modelCache.put(type, model);
             }
         }
     }

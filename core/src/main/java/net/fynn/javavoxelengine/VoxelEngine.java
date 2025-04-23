@@ -73,6 +73,11 @@ public class VoxelEngine extends Game {
         player = new Player(chunkGrid);
         Camera cam = player.getCamera();
 
+        // Culling
+        Gdx.gl.glEnable(GL20.GL_CULL_FACE);
+        Gdx.gl.glCullFace(GL20.GL_BACK);
+        Gdx.gl.glFrontFace(GL20.GL_CCW);
+
         // Berechne halbe Weltgröße in Blöcken:
         float halfWorldX = chunkGrid.getGridWidth() * Chunk.WIDTH  / 2f;
         float halfWorldZ = chunkGrid.getGridDepth() * Chunk.DEPTH  / 2f;
