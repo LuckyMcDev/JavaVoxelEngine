@@ -8,7 +8,7 @@ varying vec3 v_worldPosition;
 varying float v_distance;
 
 void main() {
-    float ambient = 0.35;
+    float ambient = 0.45;
     float lightStrength = ambient + (1.0 - ambient) * v_lightIntensity;
 
     vec3 baseColor = v_color.rgb * lightStrength * vec3(1.0, 0.9, 0.8); // Slightly warmer tones
