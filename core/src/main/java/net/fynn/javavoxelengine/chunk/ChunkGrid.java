@@ -124,6 +124,24 @@ public class ChunkGrid {
     }
 
     /**
+     * Just returns the grid width
+     *
+     * @return Grid Width
+     */
+    public int getGridWidth() {
+        return gridWidth;
+    }
+
+    /**
+     * Just returns the grid Depth
+     *
+     * @return Grid Depth
+     */
+    public int getGridDepth() {
+        return gridDepth;
+    }
+
+    /**
      * Gibt die Liste der Chunks zurück.
      *
      * @return Die Liste der Chunks.
