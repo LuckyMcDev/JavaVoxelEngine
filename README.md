@@ -191,6 +191,11 @@ hinzufügt.
 
 ![fog_using_shaders.png](readme_images%2Ffog_using_shaders.png)
 
+Der fog wurde dann ein bissl geändert zu dem, das heisst weiter weg,
+um die chunks die plötzlich eingeblendet werden zu verstecken.
+
+![fog_tweaked.png](readme_images%2Ffog_tweaked.png)
+
 ---
 
 ## 🎮 Steuerung

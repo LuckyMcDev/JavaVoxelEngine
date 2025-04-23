@@ -9,22 +9,23 @@ uniform mat3 u_normalMatrix;
 
 varying vec4 v_color;
 varying float v_lightIntensity;
-varying float v_distance; // NEW!!
+varying vec3 v_worldPosition;
+varying float v_distance; // distance to camera
 
 const vec3 lightDirection = normalize(vec3(-1.0, -0.8, -0.2));
-const vec3 lightColor = vec3(1.0, 0.95, 0.85); // slightly warm
 
 void main() {
     v_color = a_color;
 
     vec3 worldNormal = normalize(u_normalMatrix * a_normal);
     float diffuse = max(dot(worldNormal, -lightDirection), 0.0);
-
     v_lightIntensity = diffuse;
 
-    vec4 worldPosition = u_worldTrans * vec4(a_position, 1.0);
-    vec4 viewPosition = u_projViewTrans * worldPosition;
-    v_distance = length(viewPosition.xyz); // distance in view space
+    vec4 worldPos4 = u_worldTrans * vec4(a_position, 1.0);
+    v_worldPosition = worldPos4.xyz;
 
-    gl_Position = viewPosition;
+    vec4 viewPos = u_projViewTrans * worldPos4;
+    v_distance = length(viewPos.xyz);
+
+    gl_Position = viewPos;
 }
