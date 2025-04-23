@@ -1,6 +1,7 @@
 package net.fynn.javavoxelengine.chunk;
 
 import com.badlogic.gdx.math.Frustum;
+import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.math.collision.BoundingBox;
 
@@ -173,15 +174,29 @@ public class Chunk {
             }
         }
 
-        // 3) Blattkrone in Manhattan-Form
-        for (int dx = -leafRadius; dx <= leafRadius; dx++) {
-            for (int dz = -leafRadius; dz <= leafRadius; dz++) {
-                if (Math.abs(dx) + Math.abs(dz) <= leafRadius) {
-                    int lx = tx + dx, lz = tz + dz;
-                    for (int dy = trunkHeight; dy <= trunkHeight + 1; dy++) {
-                        int ly = ty + dy;
-                        if (inBounds(lx, ly, lz) && getBlock(lx, ly, lz) == VoxelType.AIR) {
-                            setBlock(lx, ly, lz, leafType);
+        // 3) Blattkrone als geschichtete Kreise (sphärisch)
+        int canopyHeight = 2 + rand.nextInt(2); // Höhe der Krone: 2–3 Ebenen
+        for (int dy = 0; dy <= canopyHeight; dy++) {
+            // Radius nimmt nach oben ab
+            float layerFraction = dy / (float) canopyHeight;
+            float layerRadius   = leafRadius * (1f - layerFraction) + 0.5f;
+
+            int intRadius = MathUtils.ceil(layerRadius);
+            int yLevel    = ty + trunkHeight + dy;
+
+            for (int dx = -intRadius; dx <= intRadius; dx++) {
+                for (int dz = -intRadius; dz <= intRadius; dz++) {
+                    // Kreisform: (dx, dz) im Radius?
+                    if (dx*dx + dz*dz <= layerRadius*layerRadius) {
+                        int lx = tx + dx;
+                        int lz = tz + dz;
+                        if (!inBounds(lx, yLevel, lz)) continue;
+
+                        // Leichtes Zufalls-Muster, damit die Krone nicht perfekt symmetrisch wird
+                        if (rand.nextFloat() < 0.9f) {
+                            if (getBlock(lx, yLevel, lz) == VoxelType.AIR) {
+                                setBlock(lx, yLevel, lz, leafType);
+                            }
                         }
                     }
                 }
