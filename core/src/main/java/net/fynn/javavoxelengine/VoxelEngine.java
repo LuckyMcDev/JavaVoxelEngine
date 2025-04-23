@@ -8,7 +8,11 @@ import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.g3d.*;
 import com.badlogic.gdx.graphics.g3d.attributes.ColorAttribute;
 import com.badlogic.gdx.graphics.g3d.environment.*;
+import com.badlogic.gdx.graphics.g3d.shaders.DefaultShader;
+import com.badlogic.gdx.graphics.g3d.utils.DefaultShaderProvider;
+import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.utils.Array;
+import com.badlogic.gdx.utils.TimeUtils;
 import imgui.ImGui;
 import imgui.ImGuiIO;
 import net.fynn.javavoxelengine.challenge.AppleCollector;
@@ -58,10 +62,12 @@ public class VoxelEngine extends Game {
         Gdx.app.log("VoxelEngine", "World seed: " + worldSeed);
 
         // 2) Initialisiere Rendering
-        modelBatch = new ModelBatch();
+
+
+        DefaultShader.Config cfg = new DefaultShader.Config();
+        // cfg.numBones = 0; // if you don’t use skinning
+        modelBatch = new ModelBatch(new DefaultShaderProvider(cfg));
         environment = new Environment();
-        environment.set(new ColorAttribute(ColorAttribute.AmbientLight, 0.8f, 0.8f, 0.8f, 1f));
-        environment.add(new DirectionalLight().set(1f, 1f, 1f, -1f, -0.8f, -0.2f));
 
         // 3) Voxel-Cache konfigurieren
         VoxelModelCache.initialize(1f, 1f, 1f);
@@ -108,6 +114,24 @@ public class VoxelEngine extends Game {
         Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT | GL20.GL_DEPTH_BUFFER_BIT);
 
         player.update(Gdx.graphics.getDeltaTime());
+
+        // Animate ambient light between blue and green
+        float t = (TimeUtils.millis() % 2000) / 2000f;      // 0→1 over two seconds
+        float blend = 0.5f + 0.5f * MathUtils.sin(t * MathUtils.PI2);
+
+        environment.clear();
+        // ambient cycles between (0.2,0.2,0.2) and (0.2,0.8,0.2):
+        environment.set(new ColorAttribute(
+            ColorAttribute.AmbientLight,
+            0.2f,
+            0.2f + 0.6f * blend,
+            0.2f,
+            1f
+        ));
+        // keep your directional light static (or animate it similarly)
+        environment.add(new DirectionalLight()
+            .set(1f, 1f, 1f, -1f, -0.8f, -0.2f)
+        );
 
         // Cursor-Fang und -Freigabe
         ImGuiIO io = ImGui.getIO();
