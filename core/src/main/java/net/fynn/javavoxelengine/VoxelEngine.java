@@ -3,6 +3,7 @@ package net.fynn.javavoxelengine;
 import com.badlogic.gdx.Game;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
+import com.badlogic.gdx.files.FileHandle;
 import com.badlogic.gdx.graphics.Camera;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.g3d.*;
@@ -12,6 +13,7 @@ import com.badlogic.gdx.graphics.g3d.shaders.DefaultShader;
 import com.badlogic.gdx.graphics.g3d.utils.DefaultShaderProvider;
 import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.utils.Array;
+import com.badlogic.gdx.utils.GdxRuntimeException;
 import com.badlogic.gdx.utils.TimeUtils;
 import imgui.ImGui;
 import imgui.ImGuiIO;
@@ -61,10 +63,13 @@ public class VoxelEngine extends Game {
         int worldSeed = (int) new Random().nextLong();
         Gdx.app.log("VoxelEngine", "World seed: " + worldSeed);
 
+        String vertexCode = loadShaderFile("shaders/vertex.vert");
+        String fragmentCode = loadShaderFile("shaders/fragment.frag");
+
         // 2) Initialisiere Rendering
-
-
-        DefaultShader.Config cfg = new DefaultShader.Config();
+        DefaultShader.Config cfg = new DefaultShader.Config(vertexCode,fragmentCode);
+        cfg.vertexShader = vertexCode;
+        cfg.fragmentShader = fragmentCode;
         // cfg.numBones = 0; // if you don’t use skinning
         modelBatch = new ModelBatch(new DefaultShaderProvider(cfg));
         environment = new Environment();
@@ -124,7 +129,7 @@ public class VoxelEngine extends Game {
         environment.set(new ColorAttribute(
             ColorAttribute.AmbientLight,
             0.2f,
-            0.2f + 0.6f * blend,
+            0.2f + 0.6f,
             0.2f,
             1f
         ));
@@ -199,6 +204,25 @@ public class VoxelEngine extends Game {
         VoxelModelCache.dispose();
         crosshair.dispose();
         thisImGui.dispose();
+    }
+
+    /**
+     * Loads a shader file from disk.
+     *
+     * @param path The path to the shader file.
+     * @return The contents of the shader file as a string.
+     */
+    private String loadShaderFile(String path) {
+        try {
+            FileHandle fileHandle = Gdx.files.internal(path);
+            if (!fileHandle.exists()) {
+                throw new GdxRuntimeException("Shader file not found: " + path);
+            }
+            return fileHandle.readString();
+        } catch (GdxRuntimeException e) {
+            Gdx.app.error("VoxelEngine", "Error loading shader file: " + path, e);
+            return "";  // Return empty string in case of error.
+        }
     }
 
     /**

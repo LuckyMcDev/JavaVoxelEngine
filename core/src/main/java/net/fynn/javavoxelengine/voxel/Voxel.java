@@ -5,6 +5,7 @@ import com.badlogic.gdx.graphics.VertexAttributes;
 import com.badlogic.gdx.graphics.g3d.Material;
 import com.badlogic.gdx.graphics.g3d.Model;
 import com.badlogic.gdx.graphics.g3d.attributes.ColorAttribute;
+import com.badlogic.gdx.graphics.g3d.utils.MeshPartBuilder;
 import com.badlogic.gdx.graphics.g3d.utils.ModelBuilder;
 
 /**
@@ -24,6 +25,21 @@ public class Voxel {
         if (voxelType == null || !voxelType.isVisible()) return null;
 
         ModelBuilder builder = new ModelBuilder();
-        return builder.createBox(width, height, depth, new Material(ColorAttribute.createDiffuse(voxelType.color)), VertexAttributes.Usage.Position | VertexAttributes.Usage.Normal);
+        builder.begin();
+
+        Material material = new Material(ColorAttribute.createDiffuse(voxelType.color));
+
+        MeshPartBuilder mpb = builder.part(
+            "cube",
+            com.badlogic.gdx.graphics.GL20.GL_TRIANGLES,
+            VertexAttributes.Usage.Position | VertexAttributes.Usage.Normal | VertexAttributes.Usage.ColorUnpacked,
+            material
+        );
+
+        mpb.setColor(voxelType.color); // 💥 THIS SETS PER-VERTEX COLOR
+
+        mpb.box(width, height, depth);
+
+        return builder.end();
     }
 }
