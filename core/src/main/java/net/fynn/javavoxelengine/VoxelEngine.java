@@ -63,8 +63,8 @@ public class VoxelEngine extends Game {
         int worldSeed = (int) new Random().nextLong();
         Gdx.app.log("VoxelEngine", "World seed: " + worldSeed);
 
-        String vertexCode = loadShaderFile("shaders/vertex.vert");
-        String fragmentCode = loadShaderFile("shaders/fragment.frag");
+        String vertexCode = loadShaderFile("shaders/vertex.glsl");
+        String fragmentCode = loadShaderFile("shaders/fragment.glsl");
 
         // 2) Initialisiere Rendering
         DefaultShader.Config cfg = new DefaultShader.Config(vertexCode,fragmentCode);
