@@ -19,24 +19,24 @@ public class AppleCollector {
     public void tryCollectApple(PerspectiveCamera camera,
                                 ChunkGrid chunkGrid,
                                 ChallengeManager challengeManager) {
-        // 1) Get ray direction from center of screen
+        // 1) Ray von der Bilschirmmitte
         Ray ray = camera.getPickRay(
             Gdx.graphics.getWidth() / 2f,
             Gdx.graphics.getHeight() / 2f
         );
 
-        // 2) Use the camera's actual position as the ray origin
+        // 2) Cam Pos als Origin nicht den Ray
         Vector3 origin    = new Vector3(camera.position);
-        Vector3 direction = new Vector3(ray.direction).nor(); // ensure it's normalized
+        Vector3 direction = new Vector3(ray.direction).nor();
 
-        // 3) March along the ray in unit steps (or smaller if you want finer resolution)
+        // 3) Mit der setpSize am Ray entlang
         final float maxDistance = 20f;
-        final float stepSize    = 0.1f;   // e.g. 0.5 blocks per iteration
+        final float stepSize    = 0.1f; // 0.1 blocks / step
         Vector3 point = new Vector3();
 
         for (float t = stepSize; t <= maxDistance; t += stepSize) {
-            point.set(origin).mulAdd(direction, t);
 
+            point.set(origin).mulAdd(direction, t);
 
             VoxelType block = chunkGrid.getBlockFromWorld(point);
             if (block == VoxelType.APPLE && challengeManager.isActive()) {
