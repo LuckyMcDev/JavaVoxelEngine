@@ -196,6 +196,14 @@ um die chunks die plötzlich eingeblendet werden zu verstecken.
 
 ![fog_tweaked.png](readme_images%2Ffog_tweaked.png)
 
+### 15.3 Shaders Part 3
+
+Der shader war gut, aber ein bisschen hart für die Augen.
+
+![soften_shadows_make_more_alive.png](readme_images%2Fsoften_shadows_make_more_alive.png)
+
+Jetzt sieht es ein bisschen besser aus!
+
 ---
 
 ## 🎮 Steuerung
@@ -204,16 +212,6 @@ um die chunks die plötzlich eingeblendet werden zu verstecken.
 - **Blicksteuerung**: Rechts click + Maus bewegen
 - **Cursor Escapen um Ui zu benutzen**: ESC
 - **Herausforderungen starten**: Öffne das „Challenges“-Fenster im ImGui-Overlay
-
----
-
-## 📺 Zwei Videos an verschidenen stellen des Development prozesses
-
-- **Engine Walkthrough**:  
-  [![Engine Demo](readme_images/JavaVoxelEngine%202025-04-17%2013-02-52.mp4)](readme_images/JavaVoxelEngine%202025-04-17%2013-02-52.mp4)
-
-- **First-Person-Controller Demo**:  
-  [![FP Controller](readme_images/JavaVoxelEngine-new-first-person-controller-2025-04-18%2011-30-24.mp4)](readme_images/JavaVoxelEngine-new-first-person-controller-2025-04-18%2011-30-24.mp4)
 
 ---
 

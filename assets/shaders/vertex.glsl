@@ -10,7 +10,7 @@ uniform mat3 u_normalMatrix;
 varying vec4 v_color;
 varying float v_lightIntensity;
 varying vec3 v_worldPosition;
-varying float v_distance; // distance to camera
+varying float v_distance;
 
 const vec3 lightDirection = normalize(vec3(-1.0, -0.8, -0.2));
 
