@@ -43,6 +43,10 @@ public class VoxelEngine extends Game {
     private ThisImGui thisImGui;
     private Crosshair crosshair;
 
+    private float timeOfDay = 0.0f; // 0.0 to 1.0 (full day)
+    private boolean autoTime = true;
+    float[] timeOfDayArray = new float[]{ timeOfDay };
+
     // World
     private ChunkGrid chunkGrid;
     private Player player;

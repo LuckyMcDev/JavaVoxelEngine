@@ -4,22 +4,21 @@ precision mediump float;
 
 varying vec4 v_color;
 varying float v_lightIntensity;
-
-// This defines a "red" color threshold
-const vec3 redColor = vec3(1.0, 0.0, 0.0);  // Pure red color
-const float colorThreshold = 0.8; // Threshold to consider a voxel as red
+varying float v_distance; // NEW!!
 
 void main() {
-    // Determine if the voxel color is red
-    float isRed = step(colorThreshold, v_color.r) * (v_color.g < 0.5 && v_color.b < 0.5);
+    float ambient = 0.25;
+    float lightStrength = ambient + (1.0 - ambient) * v_lightIntensity;
+    vec3 finalColor = v_color.rgb * lightStrength * vec3(1.0, 0.95, 0.85);
 
-    // Apply lighting to normal voxels
-    vec3 finalColor = v_color.rgb * (v_lightIntensity + 0.5);
+    // FOG SETTINGS
+    vec3 fogColor = vec3(137.0/255.0, 207.0/255.0, 240.0/255.0); // light sky blue
+    float fogStart = 50.0;
+    float fogEnd = 100.0;
+    float fogFactor = clamp((v_distance - fogStart) / (fogEnd - fogStart), 0.0, 1.0);
 
-    // If it's red, apply a much stronger red glow effect
-    if (isRed > 0.0) {
-        finalColor = mix(finalColor, vec3(1.0, 0.0, 0.0), 1.0);  // Stronger red glow effect
-    }
+    // Blend color with fog
+    finalColor = mix(finalColor, fogColor, fogFactor);
 
     gl_FragColor = vec4(finalColor, v_color.a);
 }

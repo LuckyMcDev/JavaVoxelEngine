@@ -106,10 +106,6 @@ Es gibt verschiedene Arten von Shadern:
   ➔ Hier passieren Dinge wie Texturen aufmalen, Beleuchtung berechnen oder Spezialeffekte.
 
 
-
-
----
-
 **Was ich gemacht habe:**
 - Zuerst einen super simplen Shader gebaut, der einfach nur alles schwarz gemacht hat 😅  
   ![shader_shenanigans_work_but_black.png](readme_images/shader_shenanigans_work_but_black.png)
@@ -122,13 +118,9 @@ Es gibt verschiedene Arten von Shadern:
 
   ![fixed_the_shaders_not_having_lighting.png](readme_images/fixed_the_shaders_not_having_lighting.png)
 
-- Ich habe dann noch ein bisschen rumgespielt und spaßeshalber alle Shader auf ganz rot gestellt, um zu testen ob es wirklich funktioniert:
-
+- Ich habe dann noch ein bisschen rumgespielt und die Äpfel ganz Rot gemacht also die farbe "eingefangen"
+    und dann auf alpha 1 gesetzt.
   ![really_red_apples.png](readme_images/really_red_apples.png)
-
-Alright, dann packen wir noch einen kleinen Shader-Snippet dazu – einfach erklärt und im Stil deiner Readme. So könnte das aussehen:
-
----
 
 **Ein mini Shader Beispiel**
 
@@ -158,7 +150,6 @@ void main()
 }
 ```
 
----
 
 **Fragment Shader** (`fragment.glsl`):
 
@@ -189,12 +180,16 @@ void main()
 }
 ```
 
----
 
 **Was dieser Shader macht:**
 - Der **Vertex Shader** transformiert die Welt-Koordinaten korrekt auf den Bildschirm.
 - Der **Fragment Shader** berechnet die Farbe basierend auf der Lichtposition und der Oberfläche des Blocks.
 
+### 15.2 Shaders Part 2
+shader sind ja cool und so deswegen habe ich noch einen hinzugefügt, nämlich einen der etwas "Fog"
+hinzufügt.
+
+![fog_using_shaders.png](readme_images%2Ffog_using_shaders.png)
 
 ---
 

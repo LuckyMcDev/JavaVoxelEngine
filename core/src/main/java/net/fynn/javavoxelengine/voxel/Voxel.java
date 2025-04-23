@@ -27,7 +27,14 @@ public class Voxel {
         ModelBuilder builder = new ModelBuilder();
         builder.begin();
 
-        Material material = new Material(ColorAttribute.createDiffuse(voxelType.color));
+        // Slight random tint
+        float tint = 0.9f + (float)Math.random() * 0.2f; // random from 0.9 to 1.1
+        Material material = new Material(ColorAttribute.createDiffuse(
+            voxelType.color.r * tint,
+            voxelType.color.g * tint,
+            voxelType.color.b * tint,
+            1f
+        ));
 
         MeshPartBuilder mpb = builder.part(
             "cube",
@@ -36,7 +43,7 @@ public class Voxel {
             material
         );
 
-        mpb.setColor(voxelType.color); // 💥 THIS SETS PER-VERTEX COLOR
+        mpb.setColor(voxelType.color);
 
         mpb.box(width, height, depth);
 
