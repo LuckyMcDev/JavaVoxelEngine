@@ -16,9 +16,9 @@ void main() {
     vec3 baseColor = v_color.rgb * lightStrength * vec3(1.0, 0.9, 0.8); // Slightly warmer tones
 
     // FOG
-    vec3 fogColor = vec3(160.0/255.0, 200.0/255.0, 240.0/255.0); // Lighter and brighter blue fog
-    float fogStart = 90.0; // Start fog a bit earlier
-    float fogEnd = 120.0; // Keep the fog distance short for a more dynamic effect
+    vec3 fogColor = vec3(160.0/255.0, 200.0/255.0, 240.0/255.0);
+    float fogStart = 110.0;
+    float fogEnd = 150.0;
     float fogFactor = clamp((v_distance - fogStart) / (fogEnd - fogStart), 0.0, 1.0);
 
     // Combine the base color with the fog color for a more vibrant look
