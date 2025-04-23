@@ -2,6 +2,7 @@ package net.fynn.javavoxelengine.gui;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.backends.lwjgl3.Lwjgl3Graphics;
+import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.math.collision.Ray;
 import imgui.ImGui;
 import imgui.ImGuiIO;
@@ -137,8 +138,8 @@ public class ThisImGui {
 
     private void renderDebugWindow(Camera camera, int renderedModelCount, ChunkGrid chunkGrid) {
         if (!showDebugWindow.get()) return;
-        ImGui.setNextWindowPos(0, Gdx.graphics.getHeight() - 150, ImGuiCond.Always);
-        ImGui.setNextWindowSize(Gdx.graphics.getWidth(), 150, ImGuiCond.Always);
+        ImGui.setNextWindowPos(0, Gdx.graphics.getHeight() - 250, ImGuiCond.Always);
+        ImGui.setNextWindowSize(Gdx.graphics.getWidth(), 250, ImGuiCond.Always);
         ImGui.begin("Debug Info", showDebugWindow,
             ImGuiWindowFlags.NoCollapse | ImGuiWindowFlags.NoTitleBar);
 
@@ -149,12 +150,36 @@ public class ThisImGui {
             camera.position.x, camera.position.y, camera.position.z));
 
 
-        Chunk currChunk = chunkGrid.getChunkAtWorld((int) camera.position.x, (int) camera.position.z);
+        Chunk currChunk = chunkGrid.getChunkAtWorld(camera.position.x, camera.position.z);
         ImGui.text("Current Chunk: "+currChunk.originX+" "+currChunk.originZ);
         ImGui.text("Chunk Local Coords "+chunkGrid.getChunkLocalCoords(camera.position));
 
         Ray ray = camera.getPickRay(Gdx.graphics.getWidth() / 2f, Gdx.graphics.getHeight() / 2f);
         ImGui.text("Ray: "+ray);
+
+        Vector3 localCoords = chunkGrid.getChunkLocalCoords(camera.position);
+
+        int localX = (int)Math.floor(localCoords.x);
+        int localY = (int)Math.floor(localCoords.y);
+        int localZ = (int)Math.floor(localCoords.z);
+
+        ImGui.text("locals: "+localX+" "+localY+" "+localZ);
+
+        Vector3 end = new Vector3();
+        ray.getEndPoint(end, 1.0f);
+        ImGui.text("endpoint: "+end);
+
+
+        Chunk currChunkEp = chunkGrid.getChunkAtWorld(end.x, end.z);
+        ImGui.text("Current Chunk: "+currChunkEp.originX+" "+currChunkEp.originZ);
+
+        Vector3 localCoordsEp = chunkGrid.getChunkLocalCoords(end);
+
+        int localXep = (int)Math.floor(localCoordsEp.x);
+        int localYep = (int)Math.floor(localCoordsEp.y);
+        int localZep = (int)Math.floor(localCoordsEp.z);
+
+        ImGui.text("locals: "+localXep+" "+localYep+" "+localZep);
 
         ImGui.end();
     }

@@ -58,6 +58,7 @@ public class VoxelEngine extends Game {
         chunkGrid = new ChunkGrid(10, 10, 1237161111); // Keine Chunk-Größe mehr nötig
 
         player = new Player(chunkGrid);
+        player.getCamera().translate(10,10,10);
 
         challengeManager = new ChallengeManager();
 
