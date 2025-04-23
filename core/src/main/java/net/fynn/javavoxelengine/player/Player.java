@@ -59,7 +59,7 @@ public class Player {
         Vector3 right = new Vector3(forward.z, 0f, -forward.x).nor();  // Right vector is perpendicular to forward in XZ plane
 
         // Movement speed
-        float moveSpeed = 14f;
+        float moveSpeed = 18f;
 
         // 2) Move the player based on WASD input relative to the camera's orientation
         if (Gdx.input.isKeyPressed(Input.Keys.W)) {
