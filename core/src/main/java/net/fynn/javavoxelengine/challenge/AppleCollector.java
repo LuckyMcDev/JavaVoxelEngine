@@ -16,18 +16,19 @@ public class AppleCollector {
      * @param chunkGrid Das jetzt benutzte Chunk Grid
      * @param challengeManager Der challenge manager, um den apple-check durchzuführen
      */
-    public void tryCollectApple(PerspectiveCamera camera,
-                                ChunkGrid chunkGrid,
-                                ChallengeManager challengeManager) {
+    public void tryCollectApple(PerspectiveCamera camera, ChunkGrid chunkGrid, ChallengeManager challengeManager) {
+
+        /*
         // 1) Ray von der Bilschirmmitte
         Ray ray = camera.getPickRay(
             Gdx.graphics.getWidth() / 2f,
             Gdx.graphics.getHeight() / 2f
         );
-
+         */
+        
         // 2) Cam Pos als Origin nicht den Ray
         Vector3 origin    = new Vector3(camera.position);
-        Vector3 direction = new Vector3(ray.direction).nor();
+        Vector3 direction = new Vector3(camera.direction).nor();
 
         // 3) Mit der setpSize am Ray entlang
         final float maxDistance = 20f;

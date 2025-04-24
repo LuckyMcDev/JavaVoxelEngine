@@ -6,6 +6,23 @@ Und ein parr challenges zum ausprobieren (man muss äpfel sammeln)
 
 ---
 
+## 🎮 Steuerung
+
+- **Bewegung**: W/A/S/D
+- **Blicksteuerung**: Rechts click + Maus bewegen
+- **Cursor Escapen um Ui zu benutzen**: ESC
+- **Herausforderungen starten**: Öffne das „Challenges“-Fenster im ImGui-Overlay
+
+---
+
+## 🛠️ Architektur & Module
+
+- **`core`**: Haupt-Spielschleife, Weltdatenstrukturen, Rendering-Pipeline.
+- **`lwjgl3`**: Low-Level-Fenster- und Eingabehandling via LWJGL3-Backend.
+- **`assets`**: Texturen und Shader Dateien
+
+---
+
 ## 🚀 Entwicklungsverlauf
 
 Hier siehst du die wichtigsten Schritte der Engine-Entwicklung in der Reihenfolge ihres Entstehens:
@@ -203,23 +220,6 @@ Der shader war gut, aber ein bisschen hart für die Augen.
 ![soften_shadows_make_more_alive.png](readme_images%2Fsoften_shadows_make_more_alive.png)
 
 Jetzt sieht es ein bisschen besser aus!
-
----
-
-## 🎮 Steuerung
-
-- **Bewegung**: W/A/S/D
-- **Blicksteuerung**: Rechts click + Maus bewegen
-- **Cursor Escapen um Ui zu benutzen**: ESC
-- **Herausforderungen starten**: Öffne das „Challenges“-Fenster im ImGui-Overlay
-
----
-
-## 🛠️ Architektur & Module
-
-- **`core`**: Haupt-Spielschleife, Weltdatenstrukturen, Rendering-Pipeline.
-- **`lwjgl3`**: Low-Level-Fenster- und Eingabehandling via LWJGL3-Backend.
-- **`assets`**: Texturen
 
 ---
 
