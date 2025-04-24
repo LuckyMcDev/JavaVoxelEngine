@@ -165,3 +165,4 @@ Thumbs.db
 **/resource-config.json
 core/build/libs/
 JavaVoxelEngineFiles_offset_error.zip
+/core/build/libs
