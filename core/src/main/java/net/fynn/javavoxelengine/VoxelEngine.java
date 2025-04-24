@@ -43,69 +43,82 @@ public class VoxelEngine extends Game {
     private ThisImGui thisImGui;
     private Crosshair crosshair;
 
-    private float timeOfDay = 0.0f; // 0.0 to 1.0 (full day)
-    private boolean autoTime = true;
-    float[] timeOfDayArray = new float[]{ timeOfDay };
-
-    // World
+    // World & Gameplay
     private ChunkGrid chunkGrid;
     private Player player;
+    private long worldSeed;
 
     // Challenges
     private ChallengeManager challengeManager;
     private AppleCollector appleCollector;
 
-    // Welt-Seed
-    private long worldSeed;
+    // Day-night cycle
+    private float timeOfDay = 0.0f; // 0.0 to 1.0 (full day)
+    private boolean autoTime = true;
+    float[] timeOfDayArray = new float[]{ timeOfDay };
 
     /**
      * Initialisiert die Voxel-Engine und deren Komponenten.
      */
     @Override
     public void create() {
-        // 1) Erzeuge einen zufälligen Seed
-        int worldSeed = (int) new Random().nextLong();
+        // ─────────────────────────────────────────────────────────────
+        // 1) Welt-Seed erzeugen
+        // ─────────────────────────────────────────────────────────────
+        worldSeed = new Random().nextLong();
         Gdx.app.log("VoxelEngine", "World seed: " + worldSeed);
 
+        // ─────────────────────────────────────────────────────────────
+        // 2) Shader laden
+        // ─────────────────────────────────────────────────────────────
         String vertexCode = loadShaderFile("shaders/vertex.glsl");
         String fragmentCode = loadShaderFile("shaders/fragment.glsl");
 
-        // 2) Initialisiere Rendering
-        DefaultShader.Config cfg = new DefaultShader.Config(vertexCode,fragmentCode);
+        DefaultShader.Config cfg = new DefaultShader.Config(vertexCode, fragmentCode);
         cfg.vertexShader = vertexCode;
         cfg.fragmentShader = fragmentCode;
-        // cfg.numBones = 0; // if you don’t use skinning
+
         modelBatch = new ModelBatch(new DefaultShaderProvider(cfg));
+
+        // ─────────────────────────────────────────────────────────────
+        // 3) Licht-Umgebung
+        // ─────────────────────────────────────────────────────────────
         environment = new Environment();
 
-        // 3) Voxel-Cache konfigurieren
+        // ─────────────────────────────────────────────────────────────
+        // 4) Voxel-Modell-Cache konfigurieren
+        // ─────────────────────────────────────────────────────────────
         VoxelModelCache.initialize(1f, 1f, 1f);
 
-        // 4) Erstelle ChunkGrid mit zufälligem Seed
-        chunkGrid = new ChunkGrid(20, 20, worldSeed);
-
-        // 5) Spieler und Kamera
+        // ─────────────────────────────────────────────────────────────
+        // 5) Welt-Chunks und Spieler initialisieren
+        // ─────────────────────────────────────────────────────────────
+        chunkGrid = new ChunkGrid(20, 20, (int) worldSeed);
         player = new Player(chunkGrid);
         Camera cam = player.getCamera();
 
-        // Culling
+        // Kamera zentral über der Welt platzieren
+        float halfWorldX = chunkGrid.getGridWidth() * Chunk.WIDTH / 2f;
+        float halfWorldZ = chunkGrid.getGridDepth() * Chunk.DEPTH / 2f;
+        cam.position.set(halfWorldX, 10f, halfWorldZ);
+        cam.update();
+
+        // ─────────────────────────────────────────────────────────────
+        // 6) OpenGL-Einstellungen (Backface Culling)
+        // ─────────────────────────────────────────────────────────────
         Gdx.gl.glEnable(GL20.GL_CULL_FACE);
         Gdx.gl.glCullFace(GL20.GL_BACK);
         Gdx.gl.glFrontFace(GL20.GL_CCW);
 
-        // Berechne halbe Weltgröße in Blöcken:
-        float halfWorldX = chunkGrid.getGridWidth() * Chunk.WIDTH  / 2f;
-        float halfWorldZ = chunkGrid.getGridDepth() * Chunk.DEPTH  / 2f;
-
-        // Positioniere Kamera in die Mitte des Grids, Y-Level bleibt z.B. 10:
-        cam.position.set(halfWorldX, 10f, halfWorldZ);
-        cam.update();
-
-        // 6) Challenge-System
+        // ─────────────────────────────────────────────────────────────
+        // 7) Gameplay-Logik: Challenges
+        // ─────────────────────────────────────────────────────────────
         challengeManager = new ChallengeManager();
-        appleCollector   = new AppleCollector();
+        appleCollector = new AppleCollector();
 
-        // 7) UI
+        // ─────────────────────────────────────────────────────────────
+        // 8) Benutzeroberfläche (Crosshair + ImGui)
+        // ─────────────────────────────────────────────────────────────
         crosshair = new Crosshair();
         thisImGui = new ThisImGui();
     }
@@ -115,21 +128,25 @@ public class VoxelEngine extends Game {
      */
     @Override
     public void render() {
-        Gdx.gl.glViewport(0, 0,
-            Gdx.graphics.getWidth(),
-            Gdx.graphics.getHeight()
-        );
-        Gdx.gl.glClearColor(137f/255f, 207f/255f, 240f/255f, 1f);
+        // ─────────────────────────────────────────────────────────────
+        // 1) Bildschirm vorbereiten
+        // ─────────────────────────────────────────────────────────────
+        Gdx.gl.glViewport(0, 0, Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
+        Gdx.gl.glClearColor(137f/255f, 207f/255f, 240f/255f, 1f); // Himmelblau
         Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT | GL20.GL_DEPTH_BUFFER_BIT);
 
+        // ─────────────────────────────────────────────────────────────
+        // 2) Spieler-Logik aktualisieren (Bewegung, Kamera, etc.)
+        // ─────────────────────────────────────────────────────────────
         player.update(Gdx.graphics.getDeltaTime());
 
-        // Animate ambient light between blue and green
-        float t = (TimeUtils.millis() % 2000) / 2000f;      // 0→1 over two seconds
+        // ─────────────────────────────────────────────────────────────
+        // 3) Tageszeit simulieren (nur Umgebungslicht)
+        // ─────────────────────────────────────────────────────────────
+        float t = (TimeUtils.millis() % 2000) / 2000f; // alle 2 Sekunden
         float blend = 0.5f + 0.5f * MathUtils.sin(t * MathUtils.PI2);
 
         environment.clear();
-        // ambient cycles between (0.2,0.2,0.2) and (0.2,0.8,0.2):
         environment.set(new ColorAttribute(
             ColorAttribute.AmbientLight,
             0.2f,
@@ -137,58 +154,64 @@ public class VoxelEngine extends Game {
             0.2f,
             1f
         ));
-        // keep your directional light static (or animate it similarly)
-        environment.add(new DirectionalLight()
-            .set(1f, 1f, 1f, -1f, -0.8f, -0.2f)
-        );
+        environment.add(new DirectionalLight().set(1f, 1f, 1f, -1f, -0.8f, -0.2f));
 
-        if (Gdx.input.isKeyJustPressed(Input.Keys.TAB)) {
-            boolean current = Gdx.input.isCursorCatched();
-            Gdx.input.setCursorCatched(!current); // Toggle
-        }
-
-        // Challenge-Timeout prüfen
-        challengeManager.update();
-
-
-        // Culling
+        // ─────────────────────────────────────────────────────────────
+        // 4) Culling nochmal sicherstellen
+        // ─────────────────────────────────────────────────────────────
         Gdx.gl.glEnable(GL20.GL_CULL_FACE);
         Gdx.gl.glCullFace(GL20.GL_BACK);
         Gdx.gl.glFrontFace(GL20.GL_CCW);
 
-        // Welt rendern
+        // ─────────────────────────────────────────────────────────────
+        // 5) Welt rendern
+        // ─────────────────────────────────────────────────────────────
         modelBatch.begin(player.getCamera());
         int renderedModelCount = 0;
+
         for (Chunk chunk : chunkGrid.getChunks()) {
             if (!chunk.shouldRenderChunk(chunk, player)) continue;
+
             Array<ModelInstance> voxelInstances = new Array<>();
             new GenerateVoxelInstances(chunk, voxelInstances);
+
             for (ModelInstance instance : voxelInstances) {
                 modelBatch.render(instance, environment);
                 renderedModelCount++;
             }
         }
+
         modelBatch.end();
 
-        // Crosshair
+        // ─────────────────────────────────────────────────────────────
+        // 6) Crosshair anzeigen
+        // ─────────────────────────────────────────────────────────────
         crosshair.render();
 
-        // Apfelsammeln per E
+        // ─────────────────────────────────────────────────────────────
+        // 7) Apple-Challenge
+        // ─────────────────────────────────────────────────────────────
         if (Gdx.input.isKeyJustPressed(Input.Keys.E)) {
-            appleCollector.tryCollectApple(
-                player.getCamera(),
-                chunkGrid,
-                challengeManager
-            );
+            appleCollector.tryCollectApple(player.getCamera(), chunkGrid, challengeManager);
         }
 
-        // ImGui-Overlay
-        thisImGui.render(
-            player.getCamera(),
-            renderedModelCount,
-            challengeManager,
-            chunkGrid
-        );
+        // ─────────────────────────────────────────────────────────────
+        // 8) Mausfang togglen per TAB
+        // ─────────────────────────────────────────────────────────────
+        if (Gdx.input.isKeyJustPressed(Input.Keys.TAB)) {
+            boolean current = Gdx.input.isCursorCatched();
+            Gdx.input.setCursorCatched(!current); // Toggle
+        }
+
+        // ─────────────────────────────────────────────────────────────
+        // 9) Challenge-Zustände aktualisieren
+        // ─────────────────────────────────────────────────────────────
+        challengeManager.update();
+
+        // ─────────────────────────────────────────────────────────────
+        // 10) Benutzeroberfläche (ImGui)
+        // ─────────────────────────────────────────────────────────────
+        thisImGui.render(player.getCamera(), renderedModelCount, challengeManager, chunkGrid);
     }
 
     /**
@@ -196,6 +219,9 @@ public class VoxelEngine extends Game {
      */
     @Override
     public void dispose() {
+        // ─────────────────────────────────────────────────────────────
+        // Ressourcen freigeben
+        // ─────────────────────────────────────────────────────────────
         modelBatch.dispose();
         VoxelModelCache.dispose();
         crosshair.dispose();
@@ -217,7 +243,7 @@ public class VoxelEngine extends Game {
             return fileHandle.readString();
         } catch (GdxRuntimeException e) {
             Gdx.app.error("VoxelEngine", "Error loading shader file: " + path, e);
-            return "";  // Return empty string in case of error.
+            return ""; // fallback
         }
     }
 
