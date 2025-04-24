@@ -52,11 +52,6 @@ public class VoxelEngine extends Game {
     private ChallengeManager challengeManager;
     private AppleCollector appleCollector;
 
-    // Day-night cycle
-    private float timeOfDay = 0.0f; // 0.0 to 1.0 (full day)
-    private boolean autoTime = true;
-    float[] timeOfDayArray = new float[]{ timeOfDay };
-
     /**
      * Initialisiert die Voxel-Engine und deren Komponenten.
      */
