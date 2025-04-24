@@ -135,12 +135,6 @@ public class VoxelEngine extends Game {
         // ─────────────────────────────────────────────────────────────
         player.update(Gdx.graphics.getDeltaTime());
 
-        // ─────────────────────────────────────────────────────────────
-        // 3) Tageszeit simulieren (nur Umgebungslicht)
-        // ─────────────────────────────────────────────────────────────
-        float t = (TimeUtils.millis() % 2000) / 2000f; // alle 2 Sekunden
-        float blend = 0.5f + 0.5f * MathUtils.sin(t * MathUtils.PI2);
-
         environment.clear();
         environment.set(new ColorAttribute(
             ColorAttribute.AmbientLight,
@@ -152,14 +146,14 @@ public class VoxelEngine extends Game {
         environment.add(new DirectionalLight().set(1f, 1f, 1f, -1f, -0.8f, -0.2f));
 
         // ─────────────────────────────────────────────────────────────
-        // 4) Culling nochmal sicherstellen
+        // 3) Culling nochmal sicherstellen
         // ─────────────────────────────────────────────────────────────
         Gdx.gl.glEnable(GL20.GL_CULL_FACE);
         Gdx.gl.glCullFace(GL20.GL_BACK);
         Gdx.gl.glFrontFace(GL20.GL_CCW);
 
         // ─────────────────────────────────────────────────────────────
-        // 5) Welt rendern
+        // 4) Welt rendern
         // ─────────────────────────────────────────────────────────────
         modelBatch.begin(player.getCamera());
         int renderedModelCount = 0;
@@ -179,19 +173,19 @@ public class VoxelEngine extends Game {
         modelBatch.end();
 
         // ─────────────────────────────────────────────────────────────
-        // 6) Crosshair anzeigen
+        // 5) Crosshair anzeigen
         // ─────────────────────────────────────────────────────────────
         crosshair.render();
 
         // ─────────────────────────────────────────────────────────────
-        // 7) Apple-Challenge
+        // 6) Apple-Challenge
         // ─────────────────────────────────────────────────────────────
         if (Gdx.input.isKeyJustPressed(Input.Keys.E)) {
             appleCollector.tryCollectApple(player.getCamera(), chunkGrid, challengeManager);
         }
 
         // ─────────────────────────────────────────────────────────────
-        // 8) Mausfang togglen per TAB
+        // 7) Mausfang togglen per TAB
         // ─────────────────────────────────────────────────────────────
         if (Gdx.input.isKeyJustPressed(Input.Keys.TAB)) {
             boolean current = Gdx.input.isCursorCatched();
@@ -199,12 +193,12 @@ public class VoxelEngine extends Game {
         }
 
         // ─────────────────────────────────────────────────────────────
-        // 9) Challenge-Zustände aktualisieren
+        // 8) Challenge-Zustände aktualisieren
         // ─────────────────────────────────────────────────────────────
         challengeManager.update();
 
         // ─────────────────────────────────────────────────────────────
-        // 10) Benutzeroberfläche (ImGui)
+        // 9) Benutzeroberfläche (ImGui)
         // ─────────────────────────────────────────────────────────────
         thisImGui.render(player.getCamera(), renderedModelCount, challengeManager, chunkGrid);
     }
