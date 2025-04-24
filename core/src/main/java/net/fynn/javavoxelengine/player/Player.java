@@ -3,7 +3,6 @@ package net.fynn.javavoxelengine.player;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
 import com.badlogic.gdx.graphics.PerspectiveCamera;
-import com.badlogic.gdx.graphics.g3d.utils.FirstPersonCameraController;
 import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.math.Vector3;
 import net.fynn.javavoxelengine.chunk.Chunk;
@@ -12,126 +11,111 @@ import net.fynn.javavoxelengine.voxel.VoxelType;
 
 public class Player {
     private final PerspectiveCamera camera;
-    private final FirstPersonCameraController controller;
     private final ChunkGrid chunkGrid;
 
+    private float yaw = 0f;
+    private float pitch = 0f;
+    private final float mouseSensitivity = 0.1f;
+
     // physics
-    private float vy = 0f;                       // aktuelle Vertikal-Geschwindigkeit
-    private static final float GRAVITY     = -30f;// Einheiten/sec²
-    private static final float EYE_HEIGHT  = 2f;  // Kamera-Offset über dem Boden
+    private float vy = 0f;
+    private static final float GRAVITY     = -30f;
+    private static final float EYE_HEIGHT  = 2f;
     private static final float JUMP_POWER  = 12f;
 
     private boolean isOnGround = false;
 
-    /**
-     * Die Spieler Klasse mit Chunk Grid eingabe, in dem er sich befindet
-     *
-     * @param chunkGrid Das Chunk Grid in dem sich der Spieler befindet
-     */
     public Player(ChunkGrid chunkGrid) {
         this.chunkGrid = chunkGrid;
 
         camera = new PerspectiveCamera(80,
             Gdx.graphics.getWidth(),
             Gdx.graphics.getHeight());
-        camera.position.set(0f, 50f, 0f); // initial hohe Y, wird im update korrigiert
+        camera.position.set(0f, 50f, 0f);
         camera.near = 0.1f;
-        camera.far  = 500f;
+        camera.far = 500f;
         camera.update();
 
-        controller = new FirstPersonCameraController(camera);
-        // Geschwindigkeit hochsetzen:
-        controller.setVelocity(20f);
-        controller.setDegreesPerPixel(0.07f);
-        Gdx.input.setInputProcessor(controller);
+        Gdx.input.setCursorCatched(true); // lock/hide mouse for FPS style
+        Gdx.input.setInputProcessor(null); // disable built-in controller
     }
 
-    /**
-     * Muss jeden Frame aufgerufen werden.
-     * @param delta Zeit seit letztem Frame in Sekunden
-     */
     public void update(float delta) {
-        // 0) Save old position for horizontal smoothing
         Vector3 oldPos = new Vector3(camera.position);
 
-        // 1) Calculate forward and right vectors based on the camera's direction
-        Vector3 forward = new Vector3(camera.direction.x, 0f, camera.direction.z).nor();  // Remove Y component to stay on the XZ plane
-        Vector3 right = new Vector3(forward.z, 0f, -forward.x).nor();  // Right vector is perpendicular to forward in XZ plane
+        // === Mouse look ===
+        float deltaX = -Gdx.input.getDeltaX() * mouseSensitivity;
+        float deltaY = -Gdx.input.getDeltaY() * mouseSensitivity;
 
-        // Movement speed
+        yaw += deltaX;
+        pitch += deltaY;
+
+        // Clamp pitch to avoid flipping
+        pitch = MathUtils.clamp(pitch, -89f, 89f);
+
+        // Recalculate direction vector
+        Vector3 direction = new Vector3(
+            MathUtils.cosDeg(pitch) * MathUtils.sinDeg(yaw),
+            MathUtils.sinDeg(pitch),
+            MathUtils.cosDeg(pitch) * MathUtils.cosDeg(yaw)
+        ).nor();
+        camera.direction.set(direction);
+
+        // === Movement ===
+        Vector3 forward = new Vector3(camera.direction.x, 0f, camera.direction.z).nor();
+        Vector3 right = new Vector3(forward.z, 0f, -forward.x).nor();
+
         float moveSpeed = 18f;
+        if (Gdx.input.isKeyPressed(Input.Keys.W)) camera.position.add(forward.scl(moveSpeed * delta));
+        if (Gdx.input.isKeyPressed(Input.Keys.S)) camera.position.sub(forward.scl(moveSpeed * delta));
+        if (Gdx.input.isKeyPressed(Input.Keys.A)) camera.position.add(right.scl(moveSpeed * delta));
+        if (Gdx.input.isKeyPressed(Input.Keys.D)) camera.position.sub(right.scl(moveSpeed * delta));
 
-        // 2) Move the player based on WASD input relative to the camera's orientation
-        if (Gdx.input.isKeyPressed(Input.Keys.W)) {
-            camera.position.add(forward.x * moveSpeed * delta, 0f, forward.z * moveSpeed * delta); // Move forward
-        }
-        if (Gdx.input.isKeyPressed(Input.Keys.S)) {
-            camera.position.add(-forward.x * moveSpeed * delta, 0f, -forward.z * moveSpeed * delta); // Move backward
-        }
-        if (Gdx.input.isKeyPressed(Input.Keys.A)) {
-            camera.position.add(right.x * moveSpeed * delta, 0f, right.z * moveSpeed * delta); // Move left
-        }
-        if (Gdx.input.isKeyPressed(Input.Keys.D)) {
-            camera.position.add(-right.x * moveSpeed * delta, 0f, -right.z * moveSpeed * delta); // Move right
-        }
-
-        // 3) Apply jumping if on the ground
+        // === Jumping ===
         if (Gdx.input.isKeyJustPressed(Input.Keys.SPACE) && isOnGround) {
             vy = JUMP_POWER;
             isOnGround = false;
         }
 
-        // 4) Apply gravity
+        // === Gravity & Vertical motion ===
         vy += GRAVITY * delta;
         camera.position.y += vy * delta;
 
-        // 5) Ground collision (Y axis correction)
         float groundY = findSolidGroundY(camera.position.x, camera.position.z) + EYE_HEIGHT;
         if (camera.position.y < groundY) {
-            camera.position.y = groundY;  // Instant snap to ground level
+            camera.position.y = groundY;
             vy = 0f;
             isOnGround = true;
         }
 
-        // 6) Horizontal smoothing (only for X and Z axes)
+        // === Optional smoothing for XZ movement ===
         Vector3 targetPos = new Vector3(camera.position);
-        float alpha = MathUtils.clamp(delta * 15f, 0f, 1f); // Higher smoothing rate
-        float smoothX = MathUtils.lerp(oldPos.x, targetPos.x, alpha);
-        float smoothZ = MathUtils.lerp(oldPos.z, targetPos.z, alpha);
-        camera.position.x = smoothX;
-        camera.position.z = smoothZ;
+        float alpha = MathUtils.clamp(delta * 15f, 0f, 1f);
+        camera.position.x = MathUtils.lerp(oldPos.x, targetPos.x, alpha);
+        camera.position.z = MathUtils.lerp(oldPos.z, targetPos.z, alpha);
 
-        // 7) Update camera matrix
+        // === Update camera ===
         camera.update();
+
+        // === Mouse Clicks ===
+        if (Gdx.input.isButtonJustPressed(Input.Buttons.LEFT)) {
+            System.out.println("Left click: break block");
+        }
+        if (Gdx.input.isButtonJustPressed(Input.Buttons.RIGHT)) {
+            System.out.println("Right click: place block");
+        }
     }
 
-
-
-    /**
-     * Gibt von dem Spieler die Kamera zurück
-     *
-     * @return Die kamera des Spielers
-     */
     public PerspectiveCamera getCamera() {
         return camera;
     }
 
-    /**
-     * Findet das höchste SOLIDE Block-Y unter (worldX, worldZ).
-     * Überspringt dabei alle Laub- oder Apfel-Blöcke.
-     */
     private float findSolidGroundY(float worldX, float worldZ) {
         Chunk c = chunkGrid.getChunkAtWorld((int)worldX, (int)worldZ);
         if (c == null) return 0f;
 
-        int localX = MathUtils.clamp(
-            (int)Math.floor(worldX - c.originX),
-            0, Chunk.WIDTH - 1
-        );
-        int localZ = MathUtils.clamp(
-            (int)Math.floor(worldZ - c.originZ),
-            0, Chunk.DEPTH - 1
-        );
+        int localX = MathUtils.clamp((int)Math.floor(worldX - c.originX), 0, Chunk.WIDTH - 1);
+        int localZ = MathUtils.clamp((int)Math.floor(worldZ - c.originZ), 0, Chunk.DEPTH - 1);
 
         int topY = c.getSurfaceHeight(localX, localZ);
         if (topY < 0) return c.originY;

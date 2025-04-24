@@ -142,17 +142,9 @@ public class VoxelEngine extends Game {
             .set(1f, 1f, 1f, -1f, -0.8f, -0.2f)
         );
 
-        // Cursor-Fang und -Freigabe
-        ImGuiIO io = ImGui.getIO();
-        if (Gdx.input.isKeyJustPressed(Input.Keys.ESCAPE)) {
-            Gdx.input.setCursorCatched(false);
-        }
-        if (!Gdx.input.isCursorCatched()
-            && (Gdx.input.isButtonJustPressed(Input.Buttons.LEFT)
-            || Gdx.input.isButtonJustPressed(Input.Buttons.RIGHT)
-            || Gdx.input.isButtonJustPressed(Input.Buttons.MIDDLE))
-            && !io.getWantCaptureMouse()) {
-            Gdx.input.setCursorCatched(true);
+        if (Gdx.input.isKeyJustPressed(Input.Keys.TAB)) {
+            boolean current = Gdx.input.isCursorCatched();
+            Gdx.input.setCursorCatched(!current); // Toggle
         }
 
         // Challenge-Timeout prüfen
