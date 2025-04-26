@@ -14,9 +14,11 @@ void main() {
     vec3 baseColor = v_color.rgb * lightStrength * vec3(1.0, 0.9, 0.8); // Slightly warmer tones
 
     // FOG
-    vec3 fogColor = vec3(160.0/255.0, 200.0/255.0, 240.0/255.0);
-    float fogStart = 110.0;
-    float fogEnd = 150.0;
+    vec3 fogColor = vec3(160.0/255.0, 200.0/255.0, 240.0/255.0); // Leicht Blau
+    float fogStart = 110.0; // Entfernung von dem Spieler
+    float fogEnd = 150.0;   // Entfernung von dem Spieler
+
+    // Der Nebel wird "dichter" das heisst der faktor wird grösser je weiter weg.
     float fogFactor = clamp((v_distance - fogStart) / (fogEnd - fogStart), 0.0, 1.0);
 
     // Combine the base color with the fog color for a more vibrant look
