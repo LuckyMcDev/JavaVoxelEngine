@@ -144,8 +144,8 @@ public class ThisImGui {
 
     private void renderDebugWindow(Camera camera, int renderedModelCount, ChunkGrid chunkGrid) {
         if (!showDebugWindow.get()) return;
-        ImGui.setNextWindowPos(0, Gdx.graphics.getHeight() - 250, ImGuiCond.Always);
-        ImGui.setNextWindowSize(Gdx.graphics.getWidth(), 250, ImGuiCond.Always);
+        ImGui.setNextWindowPos(0, Gdx.graphics.getHeight() - 200, ImGuiCond.Always);
+        ImGui.setNextWindowSize(Gdx.graphics.getWidth(), 200, ImGuiCond.Always);
         ImGui.begin("Debug Info", showDebugWindow,
             ImGuiWindowFlags.NoCollapse | ImGuiWindowFlags.NoTitleBar);
 
@@ -159,6 +159,9 @@ public class ThisImGui {
         Chunk currChunk = chunkGrid.getChunkAtWorld(camera.position.x, camera.position.z);
         ImGui.text("Current Chunk: "+currChunk.originX+" "+currChunk.originZ);
         ImGui.text("Chunk Local Coords "+chunkGrid.getChunkLocalCoords(camera.position));
+
+
+        ImGui.text("Camera Direction: "+camera.direction);
 
         Ray ray = camera.getPickRay(Gdx.graphics.getWidth() / 2f, Gdx.graphics.getHeight() / 2f);
         ImGui.text("Ray: "+ray);

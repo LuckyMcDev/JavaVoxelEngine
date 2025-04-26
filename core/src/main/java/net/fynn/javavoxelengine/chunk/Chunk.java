@@ -143,9 +143,7 @@ public class Chunk {
         int leafRadius  = LEAF_RADIUS  - 1 + rand.nextInt(3);          // z.B. LEAF_RADIUS±1
 
         // Blatt-Farbe
-        VoxelType leafType = rand.nextBoolean()
-            ? VoxelType.LEAVES_LIGHT
-            : VoxelType.LEAVES_DARK;
+        VoxelType leafType = rand.nextBoolean() ? VoxelType.LEAVES_LIGHT : VoxelType.LEAVES_DARK;
 
         // 1) Stamm aufbauen
         for (int i = 1; i <= trunkHeight; i++) {

@@ -20,7 +20,7 @@ public class Player {
     // physics
     private float vy = 0f;
     private static final float GRAVITY     = -30f;
-    private static final float EYE_HEIGHT  = 2f;
+    private static final float EYE_HEIGHT  = 2.5f;
     private static final float JUMP_POWER  = 12f;
 
     private boolean isOnGround = false;
@@ -65,7 +65,7 @@ public class Player {
         Vector3 forward = new Vector3(camera.direction.x, 0f, camera.direction.z).nor();
         Vector3 right = new Vector3(forward.z, 0f, -forward.x).nor();
 
-        float moveSpeed = 18f;
+        float moveSpeed = 20f;
         if (Gdx.input.isKeyPressed(Input.Keys.W)) camera.position.add(forward.scl(moveSpeed * delta));
         if (Gdx.input.isKeyPressed(Input.Keys.S)) camera.position.sub(forward.scl(moveSpeed * delta));
         if (Gdx.input.isKeyPressed(Input.Keys.A)) camera.position.add(right.scl(moveSpeed * delta));

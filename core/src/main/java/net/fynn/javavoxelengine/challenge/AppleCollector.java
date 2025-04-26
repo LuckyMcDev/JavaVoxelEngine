@@ -1,11 +1,21 @@
+
+
 package net.fynn.javavoxelengine.challenge;
 
-import com.badlogic.gdx.Gdx;
+/**
+ * JavaVoxelEngine
+ * @Copyright (c) 2025
+ * Fynn Maier
+ */
+
 import com.badlogic.gdx.graphics.PerspectiveCamera;
 import com.badlogic.gdx.math.Vector3;
-import com.badlogic.gdx.math.collision.Ray;
+import net.fynn.javavoxelengine.chunk.Chunk;
 import net.fynn.javavoxelengine.chunk.ChunkGrid;
+import net.fynn.javavoxelengine.chunk.ChunkMesher;
 import net.fynn.javavoxelengine.voxel.VoxelType;
+
+import java.lang.annotation.Documented;
 
 public class AppleCollector {
 
@@ -25,7 +35,7 @@ public class AppleCollector {
             Gdx.graphics.getHeight() / 2f
         );
          */
-        
+
         // 2) Cam Pos als Origin nicht den Ray
         Vector3 origin    = new Vector3(camera.position);
         Vector3 direction = new Vector3(camera.direction).nor();
@@ -42,6 +52,13 @@ public class AppleCollector {
             VoxelType block = chunkGrid.getBlockFromWorld(point);
             if (block == VoxelType.APPLE && challengeManager.isActive()) {
                 chunkGrid.setBlockFromWorld(point, VoxelType.AIR);
+
+                // Get the chunk at the apple's position and invalidate it
+                Chunk chunk = chunkGrid.getChunkAtWorld(point.x, point.z);
+                if (chunk != null) {
+                    ChunkMesher.invalidateChunkModel(chunk);
+                }
+
                 challengeManager.addOneAppleAndCheckComplete();
                 break;
             }

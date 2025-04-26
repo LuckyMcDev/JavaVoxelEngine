@@ -11,12 +11,8 @@ import com.badlogic.gdx.graphics.g3d.attributes.ColorAttribute;
 import com.badlogic.gdx.graphics.g3d.environment.*;
 import com.badlogic.gdx.graphics.g3d.shaders.DefaultShader;
 import com.badlogic.gdx.graphics.g3d.utils.DefaultShaderProvider;
-import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.GdxRuntimeException;
-import com.badlogic.gdx.utils.TimeUtils;
-import imgui.ImGui;
-import imgui.ImGuiIO;
 import net.fynn.javavoxelengine.challenge.AppleCollector;
 import net.fynn.javavoxelengine.challenge.ChallengeManager;
 import net.fynn.javavoxelengine.chunk.GenerateVoxelInstances;
@@ -34,7 +30,7 @@ import java.util.Random;
  * Diese Klasse initialisiert und verwaltet die Voxel-Welt und die Benutzeroberfläche.
  *
  * @author Fynn
- * @version 1.2
+ * @version 1.0.4
  */
 public class VoxelEngine extends Game {
     // Rendering

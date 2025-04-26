@@ -8,7 +8,6 @@ import com.badlogic.gdx.graphics.g3d.Model;
 import com.badlogic.gdx.graphics.g3d.attributes.ColorAttribute;
 import com.badlogic.gdx.graphics.g3d.utils.MeshPartBuilder;
 import com.badlogic.gdx.graphics.g3d.utils.ModelBuilder;
-import com.badlogic.gdx.physics.bullet.softbody.btSoftBody;
 import net.fynn.javavoxelengine.voxel.VoxelType;
 
 import java.util.HashMap;
@@ -18,11 +17,19 @@ import java.util.Map;
  * Builds and caches a single merged Model per chunk, combining all visible faces into one mesh.
  */
 public class ChunkMesher {
+
     private static final Map<String, Model> cache = new HashMap<>();
+
+    private enum Face { TOP, BOTTOM, NORTH, SOUTH, EAST, WEST }
 
     public static Model getChunkModel(Chunk chunk) {
         String key = chunk.originX + "_" + chunk.originY + "_" + chunk.originZ;
         return cache.computeIfAbsent(key, k -> buildChunkModel(chunk));
+    }
+
+    public static void invalidateChunkModel(Chunk chunk) {
+        String key = chunk.originX + "_" + chunk.originY + "_" + chunk.originZ;
+        cache.remove(key);
     }
 
     private static Model buildChunkModel(Chunk chunk) {
@@ -60,6 +67,8 @@ public class ChunkMesher {
                     VoxelType type = chunk.getBlock(x, y, z);
                     if (!type.isVisible()) continue;
 
+
+                    // Leichte zufällige Farbanpassung damit jeder Block unterschiedlich aussieht
                     float tint = 0.9f + (float)Math.random() * 0.2f;
                     float r = type.color.r * tint;
                     float g = type.color.g * tint;
@@ -68,6 +77,13 @@ public class ChunkMesher {
                     float bx = chunk.originX + x;
                     float by = chunk.originY + y;
                     float bz = chunk.originZ + z;
+
+                    /**
+                     *  Für jeden Block wird geprüft, ob ein Nachbarblock Luft ist und wenn nicht,
+                     *  werden die Quads (Rechtecke) für die jeweilige seite generiert.
+                     *
+                     *  Weil, sonst würden unnötig viele quads angezeigt, die nicht sichtbar sind --> Lag
+                     */
 
                     // TOP / BOTTOM
                     if (!chunk.inBounds(x, y+1, z) || chunk.getBlock(x, y+1, z) == VoxelType.AIR) {
@@ -104,8 +120,6 @@ public class ChunkMesher {
 
         return builder.end();
     }
-
-    private enum Face { TOP, BOTTOM, NORTH, SOUTH, EAST, WEST }
 
     private static void addQuad(MeshPartBuilder mpb, float x, float y, float z, Face face) {
         switch (face) {
