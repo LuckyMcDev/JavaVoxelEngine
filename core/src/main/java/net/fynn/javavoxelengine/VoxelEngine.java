@@ -187,7 +187,7 @@ public class VoxelEngine extends Game {
         // ─────────────────────────────────────────────────────────────
         // 7) Mausfang togglen per TAB
         // ─────────────────────────────────────────────────────────────
-        if (Gdx.input.isKeyJustPressed(Input.Keys.TAB)) {
+        if (Gdx.input.isKeyJustPressed(Input.Keys.ESCAPE)) {
             boolean current = Gdx.input.isCursorCatched();
             Gdx.input.setCursorCatched(!current); // Toggle
         }
