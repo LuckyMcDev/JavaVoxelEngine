@@ -4,7 +4,7 @@ Eine Voxel Engine in Java mit custom Chunk und Perlin noise basierter terrain ge
 Ein Imgui fenster als overlay.
 Und ein parr challenges zum ausprobieren (man muss äpfel sammeln)
 
-![Lines of Code](https://img.shields.io/badge/lines%20of%20code-2006-brightgreen)
+![Lines of Code](https://img.shields.io/badge/zeilen%20an%20code-2006-brightgreen)
 
 ---
 
