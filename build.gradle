@@ -78,4 +78,29 @@ subprojects {
   }
 }
 
+task countLinesOfCode {
+  description = 'Counts all lines of Java code from core/ and lwjgl3/.'
+  group = 'Statistics'
+
+  doLast {
+    def sources = files(
+      fileTree(dir: 'core/src/main', includes: ['**/*.java']),
+      fileTree(dir: 'lwjgl3', includes: ['**/*.java'])
+    )
+
+    println "Found files:"
+    sources.each { println " - ${it}" }
+
+    if (sources.isEmpty()) {
+      println "No Java files found! (Check folders?)"
+      return
+    }
+
+    int totalLines = sources.sum { it.readLines().size() }
+
+    println "Found ${sources.files.size()} Java files with $totalLines total lines of code!"
+  }
+}
+
+
 eclipse.project.name = 'JavaVoxelEngine' + '-parent'
