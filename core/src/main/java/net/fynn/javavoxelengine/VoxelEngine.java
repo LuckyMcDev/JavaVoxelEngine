@@ -162,7 +162,7 @@ public class VoxelEngine extends Game {
             if (!chunk.shouldRenderChunk(chunk, player)) continue;
 
             Array<ModelInstance> voxelInstances = new Array<>();
-            new GenerateVoxelInstances(chunk, voxelInstances);
+            GenerateVoxelInstances.gen(chunk, voxelInstances);
 
             for (ModelInstance instance : voxelInstances) {
                 modelBatch.render(instance, environment);

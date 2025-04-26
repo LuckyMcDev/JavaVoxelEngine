@@ -17,13 +17,13 @@ import java.util.Random;
  */
 public class Chunk {
     /** Die Breite des Chunks. */
-    public static final int WIDTH = 64;
+    public static final int WIDTH = 48;
 
     /** Die Tiefe des Chunks. */
-    public static final int DEPTH = 64;
+    public static final int DEPTH = 48;
 
     /** Die Höhe des Chunks. */
-    public static final int HEIGHT = 64;
+    public static final int HEIGHT = 48;
 
     /** Die Höhe eines Baumstammes*/
     public static final int TRUNK_HEIGHT = 7;
