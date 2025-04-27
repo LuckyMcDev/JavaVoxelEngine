@@ -4,6 +4,8 @@ Eine Voxel Engine in Java mit custom Chunk und Perlin noise basierter terrain ge
 Ein Imgui fenster als overlay.
 Und ein parr challenges zum ausprobieren (man muss äpfel sammeln)
 
+![Lines of Code](https://img.shields.io/badge/zeilen%20an%20code-2006-brightgreen)
+
 ---
 
 ## 🎮 Steuerung
@@ -28,7 +30,7 @@ Und ein parr challenges zum ausprobieren (man muss äpfel sammeln)
 Hier siehst du die wichtigsten Schritte der Engine-Entwicklung in der Reihenfolge ihres Entstehens:
 
 ### 1. Grundlegende Voxel-Erzeugung
-![generation_fucked.png](readme_images%2Fgeneration_fucked.png)
+![generation_fucked.png](readme_images/generation_fucked.png)
 
 ### 2. Perlin-Rausch Terrain einbauen
 Perlin Noise:
@@ -40,7 +42,7 @@ Fertiger Chunk:
 ![img.png](readme_images/img.png)
 
 ### 3. Versuch Grosse mengen zu generieren
-![full_chunk_but_laggy.png](readme_images%2Ffull_chunk_but_laggy.png)
+![full_chunk_but_laggy.png](readme_images/full_chunk_but_laggy.png)
 
 ### 4. Optimierung durch entfernen von Steinen
 ![img_1.png](readme_images/img_1.png)
@@ -64,24 +66,24 @@ Fertiger Chunk:
 ![Bäume](readme_images/smol_trees.png)
 
 ### 11. Optimiert:
-![new_optimizations_added_doublefps.png](readme_images%2Fnew_optimizations_added_doublefps.png)
+![new_optimizations_added_doublefps.png](readme_images/new_optimizations_added_doublefps.png)
 
 ### 12. Beim weiterentwickeln des Apfelspiels einen fehler gefunden
 Man kann sehen, dass obwohl ich in dem -64 -64 chunk bin,
 die chunk local coords -1 beträgt obwohl diese nur 0-63 betragen dürften.
 
-![rounding_error_of_death.png](readme_images%2Frounding_error_of_death.png)
+![rounding_error_of_death.png](readme_images/rounding_error_of_death.png)
 
 Versucht durch anzeigen des Rays herauszufinden was falsch ist, keine ahnung 
 
-![what_is_even_wrong.png](readme_images%2Fwhat_is_even_wrong.png)
+![what_is_even_wrong.png](readme_images/what_is_even_wrong.png)
 
 ### 13. Herausgefunden was Falsch ist!
 
 Mir wurde klar das irgendwas nmicht stimmt, also habe ich mir alle daten angeschaut die mit den Ray
 und anderem zu tun hat. das sah dann so aus:
 
-![spit_out_all_info.png](readme_images%2Fspit_out_all_info.png)
+![spit_out_all_info.png](readme_images/spit_out_all_info.png)
 
 Als ich mir das genauer angeschaut hab, habe ich gesehen das die Position des rays nicht stimmt!
 Wenn man genau hinschaut sieht man in diesem ScreenShot schon was falsch ist ;)
@@ -90,7 +92,7 @@ Wenn man genau hinschaut sieht man in diesem ScreenShot schon was falsch ist ;)
 
 In diesem Code kann man sehen wie ich den ray mit der position entlang gehe.
 
-![code_for_raytracer.png](readme_images%2Fcode_for_raytracer.png)
+![code_for_raytracer.png](readme_images/code_for_raytracer.png)
 
 ### 14. Endlich Fertig?
 
@@ -206,18 +208,18 @@ void main()
 shader sind ja cool und so deswegen habe ich noch einen hinzugefügt, nämlich einen der etwas "Fog"
 hinzufügt.
 
-![fog_using_shaders.png](readme_images%2Ffog_using_shaders.png)
+![fog_using_shaders.png](readme_images/fog_using_shaders.png)
 
 Der fog wurde dann ein bissl geändert zu dem, das heisst weiter weg,
 um die chunks die plötzlich eingeblendet werden zu verstecken.
 
-![fog_tweaked.png](readme_images%2Ffog_tweaked.png)
+![fog_tweaked.png](readme_images/fog_tweaked.png)
 
 ### 15.3 Shaders Part 3
 
 Der shader war gut, aber ein bisschen hart für die Augen.
 
-![soften_shadows_make_more_alive.png](readme_images%2Fsoften_shadows_make_more_alive.png)
+![soften_shadows_make_more_alive.png](readme_images/soften_shadows_make_more_alive.png)
 
 Jetzt sieht es ein bisschen besser aus!
 
